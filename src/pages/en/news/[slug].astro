@@ -4,10 +4,10 @@ import NewsPost from '../../../components/NewsPost.astro';
 import { getNews, getNewsPost } from '../../../lib/sanity.ts';
 
 export async function getStaticPaths() {
-  const news = await getNews();
+  const news = await getNews('en');
   const out = [];
   for (const n of news) {
-    const post = await getNewsPost(n.slug);
+    const post = await getNewsPost(n.slug, 'en');
     if (post) out.push({ params: { slug: n.slug }, props: { post } });
   }
   return out;

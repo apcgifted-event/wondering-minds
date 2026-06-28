@@ -3,12 +3,12 @@ import Base from '../../layouts/Base.astro';
 import NewsPost from '../../components/NewsPost.astro';
 import { getNews, getNewsPost } from '../../lib/sanity.ts';
 
-// Genera una pagina per ogni news pubblicata su Sanity.
+// Genera una pagina per ogni news pubblicata su Sanity (slug comuni alle lingue).
 export async function getStaticPaths() {
-  const news = await getNews();
+  const news = await getNews('it');
   const out = [];
   for (const n of news) {
-    const post = await getNewsPost(n.slug);
+    const post = await getNewsPost(n.slug, 'it');
     if (post) out.push({ params: { slug: n.slug }, props: { post } });
   }
   return out;

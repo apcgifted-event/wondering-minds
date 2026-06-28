@@ -167,8 +167,15 @@ Nessuna competenza tecnica. Apri il link dello Studio
 
 ### Aggiungere una news o un'associazione
 
-Stessa logica: scegli la sezione, **+**, compila, spunta **Pubblicato**, **Publish**.
-Per le associazioni, il logo compare solo se spunti **Uso del logo autorizzato**.
+**News** (bilingue): scegli **News e aggiornamenti** → **+**. Compila i campi comuni
+(data, copertina, slug) e poi i campi testuali in italiano (IT — Titolo/Riassunto/
+Contenuto) e in inglese (EN — Title/Summary/Content). Spunta **Pubblicato** → **Publish**.
+Se lasci vuoti i campi EN, il sito inglese mostra il testo italiano come ripiego.
+
+**Associazioni**: scegli la sezione, **+**, compila, spunta **Pubblicato**, **Publish**.
+Il logo compare solo se spunti **Uso del logo autorizzato**. Il campo "Paese" è unico
+(non tradotto): conviene scriverlo in inglese (es. "Italy", "Germany"), leggibile su
+entrambe le versioni del sito.
 
 ### Modificare i testi di una pagina (es. "Il progetto")
 

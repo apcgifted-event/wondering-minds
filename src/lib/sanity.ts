@@ -37,22 +37,28 @@ export async function getReels() {
   )
 }
 
-export async function getNews() {
+export async function getNews(lang = 'it') {
   if (!sanityClient) return []
   return sanityClient.fetch(
     `*[_type == "newsPost" && published == true] | order(date desc){
-      "id": _id, title, "slug": slug.current, date, summary,
+      "id": _id, "slug": slug.current, date,
+      "title": coalesce(title_${lang}, title_it),
+      "summary": coalesce(summary_${lang}, summary_it),
       "coverUrl": cover.asset->url
     }`
   )
 }
 
 // Singola news per slug (con il corpo in Portable Text), per la pagina di dettaglio.
-export async function getNewsPost(slug) {
+export async function getNewsPost(slug, lang = 'it') {
   if (!sanityClient) return null
   const doc = await sanityClient.fetch(
     `*[_type == "newsPost" && slug.current == $slug && published == true][0]{
-      title, date, summary, body, "coverUrl": cover.asset->url
+      "title": coalesce(title_${lang}, title_it),
+      date,
+      "summary": coalesce(summary_${lang}, summary_it),
+      "body": coalesce(body_${lang}, body_it),
+      "coverUrl": cover.asset->url
     }`,
     { slug }
   )

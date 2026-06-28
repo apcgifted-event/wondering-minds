@@ -25,7 +25,7 @@ const t = {
 }[lang];
 const base = lang === 'en' ? '/en' : '';
 
-const news = await getNews();
+const news = await getNews(lang);
 function fmtDate(d) {
   if (!d) return '';
   try { return new Date(d).toLocaleDateString(t.locale, { day: 'numeric', month: 'long', year: 'numeric' }); }
