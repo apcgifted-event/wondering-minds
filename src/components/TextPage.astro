@@ -1,0 +1,59 @@
+---
+import { PortableText } from 'astro-portabletext';
+
+// Renderizza una pagina di testo. Due fonti possibili:
+//  - 'sanityDoc': documento da Sanity con corpo in Portable Text (body) -> usa PortableText
+//  - 'fallback': oggetto locale con sections (paragraphs/list/heading) -> rende a mano
+// Passa UNA delle due. La struttura grafica è qui; i testi arrivano da Sanity quando c'è.
+const { sanityDoc, fallback } = Astro.props;
+const data = sanityDoc ?? fallback;
+const useSanityBody = !!(sanityDoc && sanityDoc.body && sanityDoc.body.length);
+---
+<article class="textpage">
+  <header class="textpage-hero">
+    <div class="container">
+      {data.eyebrow && <span class="eyebrow">{data.eyebrow}</span>}
+      <h1>{data.title}</h1>
+      {data.intro && <p class="textpage-intro">{data.intro}</p>}
+    </div>
+  </header>
+
+  <div class="container textpage-body">
+    {useSanityBody ? (
+      <div class="prose"><PortableText value={sanityDoc.body} /></div>
+    ) : (
+      <div class="prose">
+        {fallback.sections?.map((s) => (
+          <section class="textpage-section">
+            {s.heading && <h2>{s.heading}</h2>}
+            {s.paragraphs?.map((p) => <p>{p}</p>)}
+            {s.list && (
+              <ul>
+                {s.list.map((li) => <li>{li}</li>)}
+              </ul>
+            )}
+          </section>
+        ))}
+      </div>
+    )}
+  </div>
+</article>
+
+<style>
+  .textpage-hero { background: var(--forest-gradient); color: #fff; padding-block: clamp(2.6rem, 6vw, 4.5rem); }
+  .textpage-hero .eyebrow { color: var(--mint); }
+  .textpage-hero h1 { font-size: var(--step-3); margin: 0.4rem 0 0; }
+  .textpage-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
+
+  .textpage-body { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .prose { max-width: 70ch; }
+  .prose :global(h2), .textpage-section h2 {
+    font-family: var(--font-display); font-size: var(--step-1); color: var(--deep-forest);
+    margin: 2rem 0 0.6rem;
+  }
+  .prose :global(p), .textpage-section p { color: var(--ink); line-height: 1.7; margin: 0 0 1rem; }
+  .prose :global(ul), .textpage-section ul { margin: 0 0 1rem; padding-left: 1.2rem; }
+  .prose :global(li), .textpage-section li { color: var(--ink); line-height: 1.6; margin-bottom: 0.5rem; }
+  .prose :global(li)::marker, .textpage-section li::marker { color: var(--leaf-green); }
+  .textpage-section:first-child h2 { margin-top: 0; }
+</style>

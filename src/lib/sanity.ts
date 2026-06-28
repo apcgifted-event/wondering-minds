@@ -56,3 +56,20 @@ export async function getAssociations() {
     }`
   )
 }
+
+// Recupera una pagina di testo (es. "about") con i campi nella lingua richiesta.
+// Ritorna null se il CMS non è collegato o la pagina non esiste/non è pubblicata,
+// così la pagina del sito usa il fallback locale.
+export async function getPage(slug, lang = 'it') {
+  if (!sanityClient) return null
+  const doc = await sanityClient.fetch(
+    `*[_type == "page" && slug.current == $slug && published == true][0]{
+      "eyebrow": coalesce(eyebrow_${lang}, eyebrow_it),
+      "title": coalesce(title_${lang}, title_it),
+      "intro": coalesce(intro_${lang}, intro_it),
+      "body": coalesce(body_${lang}, body_it)
+    }`,
+    { slug }
+  )
+  return doc || null
+}

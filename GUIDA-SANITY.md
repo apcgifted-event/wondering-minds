@@ -170,6 +170,18 @@ Nessuna competenza tecnica. Apri il link dello Studio
 Stessa logica: scegli la sezione, **+**, compila, spunta **Pubblicato**, **Publish**.
 Per le associazioni, il logo compare solo se spunti **Uso del logo autorizzato**.
 
+### Modificare i testi di una pagina (es. "Il progetto")
+
+Le pagine di testo del sito (a partire da "Il progetto / About") sono gestibili dal
+pannello, sezione **Pagine di testo**. Ogni pagina ha i campi in italiano e inglese
+affiancati (Titolo, Introduzione, Contenuto). Modifichi il testo e fai **Publish**:
+il sito si aggiorna. La struttura grafica e l'impaginazione restano nel codice e non
+si toccano dal pannello (è voluto, così il layout non si rompe).
+
+> La pagina About arriva già precaricata coi testi dai documenti della Fondazione,
+> tramite lo script `studio/seed-about.mjs` (vedi GUIDA-ONLINE per lanciarlo una volta).
+> Se non lo lanci, il sito mostra comunque gli stessi testi dal fallback locale.
+
 ### Modificare o togliere un contenuto
 
 Aprilo, modifica e **Publish**. Per nasconderlo dal sito senza cancellarlo,
