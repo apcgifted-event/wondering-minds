@@ -179,7 +179,7 @@ il sito si aggiorna. La struttura grafica e l'impaginazione restano nel codice e
 si toccano dal pannello (è voluto, così il layout non si rompe).
 
 > La pagina About arriva già precaricata coi testi dai documenti della Fondazione,
-> tramite lo script `studio/seed-about.mjs` (vedi GUIDA-ONLINE per lanciarlo una volta).
+> tramite lo script `studio/seed-pages.mjs` (vedi GUIDA-ONLINE per lanciarlo una volta).
 > Se non lo lanci, il sito mostra comunque gli stessi testi dal fallback locale.
 
 ### Modificare o togliere un contenuto

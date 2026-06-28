@@ -39,6 +39,31 @@ export default defineType({
       of: [{ type: 'block' }, { type: 'image', options: { hotspot: true } }],
     }),
 
+    // ---- Scheda "informazioni pratiche" (facoltativa, usata es. da Evento) ----
+    defineField({
+      name: 'facts',
+      title: 'Informazioni pratiche (facoltative)',
+      description: 'Coppie etichetta/valore mostrate in una scheda in evidenza (es. Data, Luogo, Orario).',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'label_it', title: 'Etichetta IT', type: 'string' },
+            { name: 'label_en', title: 'Etichetta EN', type: 'string' },
+            { name: 'value_it', title: 'Valore IT', type: 'string' },
+            { name: 'value_en', title: 'Valore EN', type: 'string' },
+          ],
+          preview: { select: { title: 'label_it', subtitle: 'value_it' } },
+        },
+      ],
+    }),
+    defineField({
+      name: 'tourUrl',
+      title: 'Link tour virtuale (facoltativo)',
+      type: 'url',
+    }),
+
     defineField({ name: 'published', title: 'Pubblicato', type: 'boolean', initialValue: false }),
   ],
 

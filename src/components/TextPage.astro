@@ -1,13 +1,19 @@
 ---
 import { PortableText } from 'astro-portabletext';
 
-// Renderizza una pagina di testo. Due fonti possibili:
-//  - 'sanityDoc': documento da Sanity con corpo in Portable Text (body) -> usa PortableText
-//  - 'fallback': oggetto locale con sections (paragraphs/list/heading) -> rende a mano
-// Passa UNA delle due. La struttura grafica è qui; i testi arrivano da Sanity quando c'è.
+// Renderizza una pagina di testo. Fonti:
+//  - 'sanityDoc': documento Sanity (body in Portable Text, facts, tourUrl)
+//  - 'fallback': oggetto locale (sections, facts, tourUrl, tourLabel)
+// La struttura grafica è qui; i testi arrivano da Sanity quando disponibile.
 const { sanityDoc, fallback } = Astro.props;
 const data = sanityDoc ?? fallback;
 const useSanityBody = !!(sanityDoc && sanityDoc.body && sanityDoc.body.length);
+
+// Scheda info pratiche e tour: presenti da Sanity (facts/tourUrl) o dal fallback.
+const facts = (sanityDoc?.facts && sanityDoc.facts.length ? sanityDoc.facts : fallback?.facts) || [];
+const tourUrl = sanityDoc?.tourUrl ?? fallback?.tourUrl;
+const tourLabel = fallback?.tourLabel ?? 'Tour virtuale';
+const hasAside = facts.length > 0 || !!tourUrl;
 ---
 <article class="textpage">
   <header class="textpage-hero">
@@ -18,23 +24,42 @@ const useSanityBody = !!(sanityDoc && sanityDoc.body && sanityDoc.body.length);
     </div>
   </header>
 
-  <div class="container textpage-body">
-    {useSanityBody ? (
-      <div class="prose"><PortableText value={sanityDoc.body} /></div>
-    ) : (
-      <div class="prose">
-        {fallback.sections?.map((s) => (
+  <div class:list={['container', 'textpage-body', { 'has-aside': hasAside }]}>
+    <div class="prose">
+      {useSanityBody ? (
+        <PortableText value={sanityDoc.body} />
+      ) : (
+        fallback.sections?.map((s) => (
           <section class="textpage-section">
             {s.heading && <h2>{s.heading}</h2>}
             {s.paragraphs?.map((p) => <p>{p}</p>)}
-            {s.list && (
-              <ul>
-                {s.list.map((li) => <li>{li}</li>)}
-              </ul>
-            )}
+            {s.list && (<ul>{s.list.map((li) => <li>{li}</li>)}</ul>)}
           </section>
-        ))}
-      </div>
+        ))
+      )}
+    </div>
+
+    {hasAside && (
+      <aside class="textpage-aside">
+        {facts.length > 0 && (
+          <div class="facts-card">
+            <dl>
+              {facts.map((f) => (
+                <div class="fact">
+                  <dt>{f.label}</dt>
+                  <dd>{f.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+        {tourUrl && (
+          <a class="tour-link" href={tourUrl} target="_blank" rel="noopener noreferrer">
+            <span class="tour-icon" aria-hidden="true">&#127909;</span>
+            <span>{tourLabel} &rarr;</span>
+          </a>
+        )}
+      </aside>
     )}
   </div>
 </article>
@@ -46,14 +71,38 @@ const useSanityBody = !!(sanityDoc && sanityDoc.body && sanityDoc.body.length);
   .textpage-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
 
   .textpage-body { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .textpage-body.has-aside { display: grid; grid-template-columns: 1fr 320px; gap: 2.5rem; align-items: start; }
+
   .prose { max-width: 70ch; }
   .prose :global(h2), .textpage-section h2 {
-    font-family: var(--font-display); font-size: var(--step-1); color: var(--deep-forest);
-    margin: 2rem 0 0.6rem;
+    font-family: var(--font-display); font-size: var(--step-1); color: var(--deep-forest); margin: 2rem 0 0.6rem;
   }
   .prose :global(p), .textpage-section p { color: var(--ink); line-height: 1.7; margin: 0 0 1rem; }
   .prose :global(ul), .textpage-section ul { margin: 0 0 1rem; padding-left: 1.2rem; }
   .prose :global(li), .textpage-section li { color: var(--ink); line-height: 1.6; margin-bottom: 0.5rem; }
   .prose :global(li)::marker, .textpage-section li::marker { color: var(--leaf-green); }
   .textpage-section:first-child h2 { margin-top: 0; }
+
+  /* Scheda info pratiche */
+  .textpage-aside { position: sticky; top: 90px; display: flex; flex-direction: column; gap: 1rem; }
+  .facts-card { background: #eef5ec; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.4rem 1.5rem; }
+  .facts-card dl { margin: 0; }
+  .fact { padding: 0.6rem 0; border-bottom: 1px solid var(--line); }
+  .fact:last-child { border-bottom: 0; padding-bottom: 0; }
+  .fact:first-child { padding-top: 0; }
+  .fact dt { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--growth-green); }
+  .fact dd { margin: 0.15rem 0 0; color: var(--ink); font-weight: 600; }
+
+  .tour-link {
+    display: flex; align-items: center; gap: 0.6rem; text-decoration: none;
+    background: var(--deep-forest); color: #fff; padding: 0.9rem 1.2rem; border-radius: var(--radius);
+    font-weight: 600; font-size: 0.9rem; transition: background 0.15s ease;
+  }
+  .tour-link:hover { background: var(--growth-green); }
+  .tour-icon { color: var(--wonder-gold); }
+
+  @media (max-width: 820px) {
+    .textpage-body.has-aside { grid-template-columns: 1fr; }
+    .textpage-aside { position: static; order: -1; }
+  }
 </style>

@@ -136,8 +136,13 @@ Immagini della home (componente `src/components/HomeContent.astro`):
   Europa, ragazzi con smartphone, fotocamera. Stesso metodo, una per card.
 
 Altri segnaposto:
-- Immagini gallery e poster dei reel.
-- Testi delle pagine interne (About, Event, Ambassadors, ecc.): ora segnaposto.
+- Immagini gallery (6 riquadri pronti) e poster dei reel.
 - Link social reali nel footer.
+
+Tutte le pagine interne sono fatte (IT+EN): Home, Il progetto, L'evento, Blueland 2100,
+Diventa Ambassador, Associazioni, Fondazione, Gallery, Contatti, Partecipa.
+Le pagine di testo (About, Evento, Fondazione, Ambassador, Contatti, Join) sono
+gestibili da Sanity (tipo "Pagine di testo") e precaricabili con studio/seed-pages.mjs.
+Associazioni legge l'elenco da Sanity; Gallery è pronta con segnaposto immagine.
 
 Il logo ufficiale (`public/images/logo.png`) è già inserito nell'header.

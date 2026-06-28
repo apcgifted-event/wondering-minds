@@ -1,0 +1,87 @@
+---
+// Pagina Associazioni partner: griglia che legge da Sanity (schema 'association').
+// Mostra il logo solo se autorizzato; altrimenti il nome su sfondo brand.
+import { getAssociations } from '../lib/sanity.ts';
+
+const { lang } = Astro.props;
+const t = {
+  it: {
+    eyebrow: 'La rete',
+    title: 'Associazioni partecipanti',
+    intro: 'Una rete crescente di organizzazioni europee dedicate ai bambini e ai ragazzi ad alto potenziale.',
+    empty: 'Le prime associazioni partner saranno annunciate presto.',
+    cta: 'La tua associazione vuole partecipare?',
+    ctaLink: 'Scrivici',
+  },
+  en: {
+    eyebrow: 'The network',
+    title: 'Participating associations',
+    intro: 'A growing network of European organisations dedicated to gifted and high-potential children and teenagers.',
+    empty: 'The first partner associations will be announced soon.',
+    cta: 'Would your association like to take part?',
+    ctaLink: 'Get in touch',
+  },
+}[lang];
+const base = lang === 'en' ? '/en' : '';
+
+const associations = await getAssociations();
+---
+<section class="assoc-hero">
+  <div class="container">
+    <span class="eyebrow" style="color: var(--mint)">{t.eyebrow}</span>
+    <h1>{t.title}</h1>
+    <p class="assoc-intro">{t.intro}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {associations.length > 0 ? (
+      <div class="assoc-grid">
+        {associations.map((a) => (
+          <a class="assoc-card" href={a.website || '#'} target={a.website ? '_blank' : null} rel={a.website ? 'noopener noreferrer' : null}>
+            <div class="assoc-logo">
+              {a.logoAuthorized && a.logoUrl ? (
+                <img src={a.logoUrl} alt={a.name} loading="lazy" />
+              ) : (
+                <span class="assoc-name-mark">{a.name}</span>
+              )}
+            </div>
+            <div class="assoc-meta">
+              <span class="assoc-name">{a.name}</span>
+              <span class="assoc-country">{a.country}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p class="assoc-empty">{t.empty}</p>
+    )}
+
+    <div class="assoc-cta">
+      <span>{t.cta}</span>
+      <a class="btn btn--primary" href={`${base}/contact`}>{t.ctaLink}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .assoc-hero { background: var(--forest-gradient); color: #fff; padding-block: clamp(2.6rem, 6vw, 4.5rem); }
+  .assoc-hero h1 { font-size: var(--step-3); margin: 0.4rem 0 0; }
+  .assoc-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
+
+  .assoc-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .assoc-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; text-decoration: none; background: #fff; transition: transform 0.15s, box-shadow 0.2s; }
+  .assoc-card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -20px rgba(26,92,56,0.5); }
+  .assoc-logo { aspect-ratio: 16 / 9; display: grid; place-items: center; background: #eef5ec; padding: 1rem; }
+  .assoc-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .assoc-name-mark { font-family: var(--font-display); font-weight: 700; color: var(--deep-forest); text-align: center; font-size: 1.1rem; }
+  .assoc-meta { padding: 0.9rem 1.1rem; display: flex; flex-direction: column; }
+  .assoc-name { font-weight: 700; color: var(--deep-forest); }
+  .assoc-country { font-size: 0.85rem; color: var(--ink-soft); }
+
+  .assoc-empty { padding: 2.5rem; text-align: center; color: var(--ink-soft); border: 1px dashed var(--mint); border-radius: var(--radius); background: #fff; }
+
+  .assoc-cta { margin-top: 2.5rem; padding: 1.6rem; background: #f6ecd4; border-radius: var(--radius); display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .assoc-cta span { font-family: var(--font-display); font-size: var(--step-1); color: var(--deep-forest); }
+</style>
