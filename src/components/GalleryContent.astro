@@ -1,6 +1,7 @@
 ---
-// Pagina Gallery: griglia di immagini. Per ora segnaposto, dato che le foto
-// non sono ancora disponibili. In futuro potrà leggere da una collezione Sanity.
+// Pagina Gallery: griglia di foto gestite da Sanity (schema 'galleryImage').
+// Con foto: mostra immagini + didascalia, ordinate. Senza: segnaposto.
+import { getGallery } from '../lib/sanity.ts';
 import Placeholder from './Placeholder.astro';
 
 const { lang } = Astro.props;
@@ -8,18 +9,17 @@ const t = {
   it: {
     eyebrow: 'Gallery',
     title: 'Momenti e storie',
-    intro: 'Immagini, creativit\u00e0 e momenti dalla nostra comunit\u00e0. La galleria si popoler\u00e0 con l\u2019avvicinarsi e lo svolgersi dell\u2019evento.',
-    empty: 'Le prime immagini arriveranno presto.',
+    intro: 'Immagini, creatività e momenti dalla nostra comunità. La galleria si popolerà con l’avvicinarsi e lo svolgersi dell’evento.',
   },
   en: {
     eyebrow: 'Gallery',
     title: 'Moments and stories',
     intro: 'Images, creativity and moments from our community. The gallery will fill up as the event approaches and unfolds.',
-    empty: 'The first images are on their way.',
   },
 }[lang];
 
-// Segnaposto: 6 riquadri in attesa delle foto reali.
+const photos = await getGallery(lang);
+// Quando non ci sono ancora foto, mostro 6 segnaposto.
 const slots = Array.from({ length: 6 });
 ---
 <section class="gallery-hero">
@@ -32,11 +32,22 @@ const slots = Array.from({ length: 6 });
 
 <section class="section">
   <div class="container">
-    <div class="gallery-grid">
-      {slots.map((_, i) => (
-        <Placeholder label={`Immagine ${i + 1}`} ratio="1 / 1" alt="" />
-      ))}
-    </div>
+    {photos.length > 0 ? (
+      <div class="gallery-grid">
+        {photos.map((p) => (
+          <figure class="gallery-item">
+            <img src={p.url} alt={p.alt || p.caption || ''} loading="lazy" />
+            {p.caption && <figcaption>{p.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    ) : (
+      <div class="gallery-grid">
+        {slots.map((_, i) => (
+          <Placeholder label={`Immagine ${i + 1}`} ratio="1 / 1" alt="" />
+        ))}
+      </div>
+    )}
   </div>
 </section>
 
@@ -46,4 +57,7 @@ const slots = Array.from({ length: 6 });
   .gallery-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
 
   .gallery-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .gallery-item { margin: 0; border-radius: var(--radius); overflow: hidden; background: #fff; border: 1px solid var(--line); }
+  .gallery-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+  .gallery-item figcaption { padding: 0.6rem 0.8rem; font-size: 0.82rem; color: var(--ink-soft); }
 </style>

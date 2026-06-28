@@ -93,3 +93,26 @@ export async function getPage(slug, lang = 'it') {
   )
   return doc || null
 }
+
+// Immagini a posizione fissa (hero, card della home).
+// Ritorna una mappa { slot: { url, alt } } per accesso diretto, es. images.hero.
+export async function getSiteImages() {
+  if (!sanityClient) return {}
+  const rows = await sanityClient.fetch(
+    `*[_type == "siteImage" && defined(image)]{ slot, alt, "url": image.asset->url }`
+  )
+  const map = {}
+  for (const r of rows || []) map[r.slot] = { url: r.url, alt: r.alt || '' }
+  return map
+}
+
+// Immagini della gallery, ordinate, con didascalia nella lingua richiesta.
+export async function getGallery(lang = 'it') {
+  if (!sanityClient) return []
+  return sanityClient.fetch(
+    `*[_type == "galleryImage" && published == true] | order(order asc){
+      "id": _id, "url": image.asset->url, alt,
+      "caption": coalesce(caption_${lang}, caption_it)
+    }`
+  )
+}

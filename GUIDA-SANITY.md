@@ -189,6 +189,24 @@ si toccano dal pannello (è voluto, così il layout non si rompe).
 > tramite lo script `studio/seed-pages.mjs` (vedi GUIDA-ONLINE per lanciarlo una volta).
 > Se non lo lanci, il sito mostra comunque gli stessi testi dal fallback locale.
 
+### Sostituire le immagini del sito (hero e card della home)
+
+Sezione **Immagini del sito**. Ogni immagine occupa una **posizione** fissa:
+- *Home — Foto principale (hero)*: la grande foto in alto nella home.
+- *Home — Card "Blueland 2100" / "Diventa Ambassador" / "Associazioni" / "News" /
+  "Gallery"*: le immagini delle cinque card colorate.
+
+Per sostituirne una: **+**, scegli la **Posizione**, carica l'**Immagine**, scrivi
+un breve **testo alternativo** (descrizione per accessibilità), **Publish**. Usa ogni
+posizione una sola volta. Dove non carichi nulla, il sito mostra un segnaposto.
+
+### Gestire la Gallery
+
+Sezione **Gallery — Immagini**. Aggiungi quante foto vuoi: per ognuna carichi la
+**foto**, una **didascalia** (IT/EN), il **testo alternativo** e un numero di **ordine**
+(più basso = appare prima). Spunta **Pubblicata**. Finché non c'è nessuna foto, la
+pagina Gallery mostra dei segnaposto.
+
 ### Modificare o togliere un contenuto
 
 Aprilo, modifica e **Publish**. Per nasconderlo dal sito senza cancellarlo,

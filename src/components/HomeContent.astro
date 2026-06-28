@@ -4,13 +4,16 @@
 // reel a griglia; riga di card colorate come nella bozza.
 import { getCollection } from 'astro:content';
 import { useTranslations } from '../i18n/ui.ts';
-import { getReels } from '../lib/sanity.ts';
+import { getReels, getSiteImages } from '../lib/sanity.ts';
 import ReelCard from './ReelCard.astro';
 import Placeholder from './Placeholder.astro';
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const base = lang === 'en' ? '/en' : '';
+
+// Immagini gestite da Sanity (hero + card). Vuoto = si mostra il segnaposto.
+const img = await getSiteImages();
 
 // Fonte primaria: Sanity. Fallback ai contenuti locali se il CMS non è collegato.
 let reels = await getReels();
@@ -19,13 +22,13 @@ if (!reels || reels.length === 0) {
   reels = local.sort((a, b) => a.data.order - b.data.order).map((r) => ({ id: r.id, ...r.data }));
 }
 
-// Card della riga inferiore, nell'ordine della bozza.
+// Card della riga inferiore, nell'ordine della bozza. 'slot' = chiave immagine Sanity.
 const cards = [
-  { key: 'blueland', href: `${base}/blueland`, variant: 'feature', photo: 'Illustrazione città fantastica blu/verde notturna' },
-  { key: 'ambassador', href: `${base}/ambassadors`, variant: 'mint', photo: 'Mano che regge un piccolo globo terrestre' },
-  { key: 'associations', href: `${base}/associations`, variant: 'gold', photo: 'Mappa stilizzata dell’Europa' },
-  { key: 'news', href: `${base}/news`, variant: 'mint', photo: 'Gruppo di ragazzi sorridenti con smartphone' },
-  { key: 'gallery', href: `${base}/gallery`, variant: 'mint', photo: 'Macchina fotografica vintage su fondo chiaro' },
+  { key: 'blueland', href: `${base}/blueland`, variant: 'feature', slot: 'card-blueland', photo: 'Illustrazione città fantastica blu/verde notturna' },
+  { key: 'ambassador', href: `${base}/ambassadors`, variant: 'mint', slot: 'card-ambassador', photo: 'Mano che regge un piccolo globo terrestre' },
+  { key: 'associations', href: `${base}/associations`, variant: 'gold', slot: 'card-associations', photo: 'Mappa stilizzata dell’Europa' },
+  { key: 'news', href: `${base}/news`, variant: 'mint', slot: 'card-news', photo: 'Gruppo di ragazzi sorridenti con smartphone' },
+  { key: 'gallery', href: `${base}/gallery`, variant: 'mint', slot: 'card-gallery', photo: 'Macchina fotografica vintage su fondo chiaro' },
 ];
 ---
 <!-- ============================ HERO ============================ -->
@@ -46,8 +49,13 @@ const cards = [
     </div>
 
     <div class="hero-visual">
-      <!-- Foto hero (segnaposto): sostituisci con public/images/hero.jpg -->
-      <Placeholder label={t('hero.photoLabel')} ratio="16 / 11" alt="" />
+      <!-- Foto hero: da Sanity (posizione "hero") o segnaposto se non caricata -->
+      <Placeholder
+        src={img.hero?.url}
+        alt={img.hero?.alt}
+        label={t('hero.photoLabel')}
+        ratio="16 / 11"
+      />
       <!-- Card evento tonda sovrapposta, come nella bozza -->
       <aside class="event-badge" aria-label={t('event.city')}>
         <span class="event-badge-icon" aria-hidden="true">&#128197;</span>
@@ -89,7 +97,7 @@ const cards = [
       {cards.map((c) => (
         <a class:list={['fcard', `fcard--${c.variant}`]} href={c.href}>
           <div class="fcard-media">
-            <Placeholder label={c.photo} ratio="1 / 1" alt="" />
+            <Placeholder src={img[c.slot]?.url} alt={img[c.slot]?.alt} label={c.photo} ratio="1 / 1" />
           </div>
           <div class="fcard-body">
             <h3>{t(`cards.${c.key}.title`)}</h3>
