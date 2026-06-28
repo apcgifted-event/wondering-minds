@@ -1,0 +1,121 @@
+// Dizionario centrale delle stringhe IT/EN.
+// Tutto il testo dell'interfaccia passa di qui: aggiungere una lingua = aggiungere una chiave.
+export const languages = {
+  it: 'Italiano',
+  en: 'English',
+};
+
+export const defaultLang = 'it';
+
+export const ui = {
+  it: {
+    'nav.home': 'Home',
+    'nav.about': 'Il progetto',
+    'nav.event': "L'evento",
+    'nav.blueland': 'Blueland 2100',
+    'nav.ambassadors': 'Ambassador',
+    'nav.associations': 'Associazioni',
+    'nav.foundation': 'Fondazione',
+    'nav.gallery': 'Gallery',
+    'nav.contact': 'Contatti',
+    'cta.join': 'Partecipa al progetto',
+    'cta.becomeAmbassador': 'Diventa Ambassador',
+    'announce.text': 'Road to Brussels \u2014 9 ottobre 2026',
+    'announce.cta': 'Partecipa',
+    'hero.line1': 'Menti giovani.',
+    'hero.line2': 'Futuri migliori.',
+    'hero.sub1': "Un'iniziativa europea per ragazzi gifted e ad alto potenziale.",
+    'hero.sub2': 'Insieme per il benessere, l\u2019inclusione e un domani migliore.',
+    'event.date': '9 ottobre 2026',
+    'event.city': 'Bruxelles',
+    'event.venue': 'Istituto Italiano di Cultura',
+    'event.address': 'Avenue de Livourne 38, 1050 Bruxelles, Belgio',
+    'reels.title': 'Voci dall\u2019Europa',
+    'reels.sub': 'Reel degli Ambassador: storie, idee e visioni dai giovani di tutta Europa.',
+    'reels.seeAll': 'Vedi tutti i reel',
+    'reels.empty': 'I primi reel arriveranno presto. Torna a trovarci.',
+    'reels.watchOn': 'Guarda su',
+    'hero.photoLabel': 'Foto orizzontale: ragazzi di spalle, braccia sulle spalle, davanti alle bandiere UE (1600\u00d7900px)',
+    'cards.blueland.title': 'Blueland 2100',
+    'cards.blueland.body': 'Immagina. Crea. Costruisci il futuro.',
+    'cards.blueland.cta': 'Scopri di pi\u00f9',
+    'cards.ambassador.title': 'Diventa Ambassador',
+    'cards.ambassador.body': 'Puoi fare la differenza. Ovunque tu sia.',
+    'cards.ambassador.cta': 'Scopri come',
+    'cards.associations.title': 'Associazioni partecipanti',
+    'cards.associations.body': 'Una rete crescente di organizzazioni in tutta Europa.',
+    'cards.associations.cta': 'Conoscile',
+    'cards.news.title': 'News e aggiornamenti',
+    'cards.news.body': 'Segui il percorso del progetto.',
+    'cards.news.cta': 'Leggi',
+    'cards.gallery.title': 'Gallery',
+    'cards.gallery.body': 'Momenti, storie e creativit\u00e0 dalla nostra comunit\u00e0.',
+    'cards.gallery.cta': 'Esplora',
+    'footer.quote': 'Il futuro appartiene a chi sa stupirsi, immaginare e agire insieme.',
+    'footer.follow': 'Seguici',
+    'footer.privacy': 'Privacy e cookie',
+    'footer.legal': 'Titolare del trattamento',
+    'foundation.note': 'Un progetto della Fondazione Carano 4 Children.',
+  },
+  en: {
+    'nav.home': 'Home',
+    'nav.about': 'About',
+    'nav.event': 'The event',
+    'nav.blueland': 'Blueland 2100',
+    'nav.ambassadors': 'Ambassadors',
+    'nav.associations': 'Associations',
+    'nav.foundation': 'Foundation',
+    'nav.gallery': 'Gallery',
+    'nav.contact': 'Contact',
+    'cta.join': 'Join the project',
+    'cta.becomeAmbassador': 'Become an ambassador',
+    'announce.text': 'Road to Brussels \u2014 9 October 2026',
+    'announce.cta': 'Join',
+    'hero.line1': 'Young minds.',
+    'hero.line2': 'Better futures.',
+    'hero.sub1': 'A European initiative for gifted and high-potential young people.',
+    'hero.sub2': 'Together for wellbeing, inclusion and a better tomorrow.',
+    'event.date': '9 October 2026',
+    'event.city': 'Brussels',
+    'event.venue': 'Istituto Italiano di Cultura',
+    'event.address': 'Avenue de Livourne 38, 1050 Brussels, Belgium',
+    'reels.title': 'Voices from Europe',
+    'reels.sub': 'Ambassador reels: stories, ideas and visions from young people across Europe.',
+    'reels.seeAll': 'See all reels',
+    'reels.empty': 'The first reels are on their way. Check back soon.',
+    'reels.watchOn': 'Watch on',
+    'hero.photoLabel': 'Horizontal photo: young people from behind, arms over shoulders, in front of EU flags (1600\u00d7900px)',
+    'cards.blueland.title': 'Blueland 2100',
+    'cards.blueland.body': 'Imagine. Create. Build the future.',
+    'cards.blueland.cta': 'Discover more',
+    'cards.ambassador.title': 'Become an ambassador',
+    'cards.ambassador.body': 'You can make a difference. Wherever you are.',
+    'cards.ambassador.cta': 'Find out how',
+    'cards.associations.title': 'Participating associations',
+    'cards.associations.body': 'A growing network of organizations across Europe.',
+    'cards.associations.cta': 'Meet them',
+    'cards.news.title': 'News & updates',
+    'cards.news.body': 'Stay informed about the project journey.',
+    'cards.news.cta': 'Read',
+    'cards.gallery.title': 'Gallery',
+    'cards.gallery.body': 'Moments, stories and creativity from our community.',
+    'cards.gallery.cta': 'Explore',
+    'footer.quote': 'The future belongs to those who wonder, imagine and act together.',
+    'footer.follow': 'Follow us',
+    'footer.privacy': 'Privacy & cookies',
+    'footer.legal': 'Data controller',
+    'foundation.note': 'A project by the Carano 4 Children Foundation.',
+  },
+} as const;
+
+export function useTranslations(lang) {
+  return function t(key) {
+    return ui[lang]?.[key] ?? ui[defaultLang][key] ?? key;
+  };
+}
+
+export function getLangFromUrl(url) {
+  const [, maybeLang] = url.pathname.split('/');
+  if (maybeLang in ui) return maybeLang;
+  return defaultLang;
+}

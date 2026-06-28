@@ -1,0 +1,12 @@
+{
+  "name": "Sofia",
+  "age": 17,
+  "country": "Spain",
+  "countryCode": "es",
+  "source": "embed",
+  "platform": "tiktok",
+  "embedUrl": "https://www.tiktok.com/@esempio/video/000",
+  "consentOnFile": false,
+  "published": false,
+  "order": 3
+}

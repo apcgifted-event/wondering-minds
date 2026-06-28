@@ -1,0 +1,102 @@
+/* ===========================================================================
+   Wondering Minds — design tokens
+   Derivati dalla Brand Identity ufficiale (pag. 9 e 19 della guida).
+   Palette: Deep Forest / Growth / Leaf / Mint / Wonder Gold.
+   Tipografia: Cambria (display) + Calibri (testo), come da guida.
+   =========================================================================== */
+
+:root {
+  /* Colori ufficiali del brand */
+  --deep-forest: #1A5C38;   /* primario: sfondi scuri, testi su chiaro */
+  --growth-green: #2D8653;  /* secondario: UI, bordi, icone */
+  --leaf-green: #4CAF78;    /* accento: call-to-action, highlight */
+  --mint: #A8D5B5;          /* supporto: sfondi chiari, card */
+  --wonder-gold: #D4A853;   /* contrasto: titoli su scuro, stelle, badge */
+
+  /* Neutri di supporto */
+  --paper: #FAFBF6;         /* sfondo chiaro caldo, coerente con le slide */
+  --ink: #1B2A20;           /* testo principale su chiaro */
+  --ink-soft: #4A5A50;      /* testo secondario */
+  --line: #E2EAE0;          /* divisori sottili */
+  --forest-gradient: linear-gradient(135deg, #1A5C38 0%, #225f3b 55%, #2D8653 100%);
+
+  /* Tipografia. Cambria/Calibri sono font di sistema su molti device;
+     Georgia e una sans di sistema fanno da fallback robusto ovunque. */
+  --font-display: 'Cambria', 'Gelasio', Georgia, 'Times New Roman', serif;
+  --font-body: 'Calibri', 'Carlito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Scala tipografica */
+  --step--1: clamp(0.83rem, 0.78rem + 0.2vw, 0.95rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
+  --step-1: clamp(1.3rem, 1.15rem + 0.7vw, 1.7rem);
+  --step-2: clamp(1.75rem, 1.4rem + 1.6vw, 2.6rem);
+  --step-3: clamp(2.4rem, 1.8rem + 3vw, 4.2rem);
+
+  --radius: 16px;
+  --radius-lg: 28px;
+  --maxw: 1280px;
+  --gutter: clamp(1.2rem, 4vw, 3rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.08; margin: 0; }
+
+a { color: inherit; }
+
+img { max-width: 100%; display: block; }
+
+.container { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* Eyebrow: etichetta in maiuscoletto spaziato, ricorrente nella guida */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--growth-green);
+}
+
+/* Bottoni */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-body); font-weight: 600; font-size: var(--step-0);
+  padding: 0.85rem 1.6rem; border-radius: 999px; border: 1.5px solid transparent;
+  text-decoration: none; cursor: pointer; transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+}
+.btn:focus-visible { outline: 3px solid var(--wonder-gold); outline-offset: 2px; }
+.btn:hover { transform: translateY(-1px); }
+.btn--primary { background: var(--deep-forest); color: #fff; }
+.btn--primary:hover { background: var(--growth-green); }
+.btn--ghost { background: transparent; color: var(--deep-forest); border-color: var(--deep-forest); }
+.btn--ghost:hover { background: var(--deep-forest); color: #fff; }
+.btn--gold { background: var(--wonder-gold); color: var(--deep-forest); }
+
+/* Star: la stellina dorata ricorrente nel brand */
+.star { color: var(--wonder-gold); }
+
+.section { padding-block: clamp(3rem, 7vw, 6rem); }
+
+/* Accessibilità: skip link */
+.skip-link {
+  position: absolute; left: -999px; top: 0; background: var(--deep-forest); color: #fff;
+  padding: 0.6rem 1rem; border-radius: 0 0 8px 0; z-index: 1000;
+}
+.skip-link:focus { left: 0; }

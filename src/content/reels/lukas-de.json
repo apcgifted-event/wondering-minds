@@ -1,0 +1,12 @@
+{
+  "name": "Lukas",
+  "age": 15,
+  "country": "Germany",
+  "countryCode": "de",
+  "source": "upload",
+  "videoUrl": "/videos/lukas.mp4",
+  "posterUrl": "/images/reels/lukas.jpg",
+  "consentOnFile": true,
+  "published": true,
+  "order": 2
+}

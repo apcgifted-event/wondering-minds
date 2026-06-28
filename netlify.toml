@@ -1,0 +1,12 @@
+# Configurazione build per Netlify.
+# Con questo file, Netlify imposta tutto da solo: non serve compilare i campi a mano.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Le variabili SANITY_PROJECT_ID e SANITY_DATASET vanno aggiunte
+# dall'interfaccia Netlify (Site configuration -> Environment variables),
+# NON qui, per non versionarle nel repository.

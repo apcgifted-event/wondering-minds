@@ -1,0 +1,149 @@
+---
+import { useTranslations, getLangFromUrl } from '../i18n/ui.ts';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const base = lang === 'en' ? '/en' : '';
+
+const nav = [
+  { key: 'nav.home', href: `${base}/` },
+  { key: 'nav.about', href: `${base}/about` },
+  { key: 'nav.event', href: `${base}/event` },
+  { key: 'nav.blueland', href: `${base}/blueland` },
+  { key: 'nav.ambassadors', href: `${base}/ambassadors` },
+  { key: 'nav.associations', href: `${base}/associations` },
+  { key: 'nav.foundation', href: `${base}/foundation` },
+  { key: 'nav.gallery', href: `${base}/gallery` },
+  { key: 'nav.contact', href: `${base}/contact` },
+];
+
+// URL della pagina corrente nell'altra lingua, per lo switch.
+const otherLang = lang === 'en' ? 'it' : 'en';
+const path = Astro.url.pathname.replace(/^\/en/, '') || '/';
+const otherHref = otherLang === 'en' ? `/en${path === '/' ? '/' : path}` : (path === '/' ? '/' : path);
+---
+<!-- Barra annuncio: tiene in evidenza l'evento e la CTA, fuori dal menu -->
+<div class="announce">
+  <div class="container announce-inner">
+    <span class="announce-text"><span class="star" aria-hidden="true">&#9733;</span> {t('announce.text')}</span>
+    <a class="announce-cta" href={`${base}/join`}>{t('announce.cta')} &rarr;</a>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={`${base}/`} aria-label="Wondering Minds — home">
+      <img src="/images/logo.png" alt="Wondering Minds" width="160" height="54" class="brand-logo" />
+    </a>
+
+    <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
+      <span class="sr-only">Menu</span>
+      <span class="nav-toggle-bar" aria-hidden="true"></span>
+    </button>
+
+    <nav id="primary-nav" class="primary-nav" aria-label="Primary">
+      <ul>
+        {nav.map((item, i) => (
+          <li class:list={[{ 'has-sep': i > 0 }]}><a href={item.href}>{t(item.key)}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <a class="lang-switch" href={otherHref} hreflang={otherLang} lang={otherLang}>
+      {otherLang.toUpperCase()}
+    </a>
+  </div>
+</header>
+
+<style>
+  /* ---------- Barra annuncio ---------- */
+  .announce { background: var(--deep-forest); color: #fff; font-size: 0.82rem; }
+  .announce-inner { display: flex; align-items: center; justify-content: center; gap: 1.2rem; padding: 0.45rem 0; }
+  .announce-text { font-weight: 600; letter-spacing: 0.01em; }
+  .announce-text .star { color: var(--wonder-gold); }
+  .announce-cta {
+    color: var(--deep-forest); background: var(--wonder-gold); text-decoration: none;
+    font-weight: 700; padding: 0.2rem 0.8rem; border-radius: 999px; white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+  .announce-cta:hover { background: #e6bd63; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250, 251, 246, 0.94);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner { display: flex; align-items: center; gap: 1.5rem; min-height: 72px; }
+
+  .brand { display: inline-flex; align-items: center; flex-shrink: 0; }
+  .brand-logo { display: block; height: 48px; width: auto; }
+
+  /* Menu su UNA riga, con separatori verticali sottili tra le voci */
+  .primary-nav { margin-inline: auto; }
+  .primary-nav ul { display: flex; align-items: center; gap: 0; list-style: none; margin: 0; padding: 0; white-space: nowrap; }
+  .primary-nav li { display: flex; align-items: center; }
+  .primary-nav li.has-sep::before {
+    content: ''; width: 1px; height: 16px; background: var(--line); margin-inline: 0.65rem;
+  }
+  .primary-nav a {
+    text-decoration: none; font-size: 0.9rem; font-weight: 600; color: var(--ink-soft);
+    padding: 0.4rem 0.15rem; border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .primary-nav a:hover, .primary-nav a[aria-current="page"] { color: var(--deep-forest); border-color: var(--wonder-gold); }
+
+  .lang-switch {
+    flex-shrink: 0; font-weight: 700; font-size: 0.85rem; text-decoration: none; color: var(--growth-green);
+    border: 1.5px solid var(--line); border-radius: 999px; padding: 0.4rem 0.7rem;
+  }
+  .lang-switch:hover { border-color: var(--growth-green); }
+
+  .nav-toggle { display: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /* ---------- Responsive ---------- */
+  /* Schermi medi: riduco un filo spaziatura e font per restare su una riga più a lungo */
+  @media (max-width: 1180px) {
+    .primary-nav a { font-size: 0.84rem; }
+    .primary-nav li.has-sep::before { margin-inline: 0.5rem; }
+    .header-inner { gap: 1rem; }
+  }
+  @media (max-width: 1040px) {
+    .primary-nav a { font-size: 0.8rem; }
+    .primary-nav li.has-sep::before { margin-inline: 0.4rem; }
+  }
+  /* Sotto i 940px: menu a tendina mobile */
+  @media (max-width: 940px) {
+    .announce-text { font-size: 0.78rem; }
+    .nav-toggle {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; margin-left: auto; order: 2;
+      background: var(--deep-forest); border: none; border-radius: 10px; cursor: pointer;
+    }
+    .nav-toggle-bar, .nav-toggle-bar::before, .nav-toggle-bar::after {
+      content: ''; display: block; width: 20px; height: 2px; background: #fff; position: relative;
+    }
+    .nav-toggle-bar::before { position: absolute; top: -6px; }
+    .nav-toggle-bar::after { position: absolute; top: 6px; }
+    .lang-switch { order: 1; }
+    .primary-nav {
+      order: 3; flex-basis: 100%; margin: 0;
+      max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
+    }
+    .primary-nav.open { max-height: 640px; }
+    .primary-nav ul { flex-direction: column; align-items: stretch; padding-block: 0.5rem 1rem; white-space: normal; }
+    .primary-nav li { display: block; }
+    .primary-nav li.has-sep::before { display: none; }
+    .primary-nav a { display: block; padding: 0.7rem 0.2rem; }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const nav = document.getElementById('primary-nav');
+  toggle?.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+</script>

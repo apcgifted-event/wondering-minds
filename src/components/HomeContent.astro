@@ -1,0 +1,188 @@
+---
+// Home allineata alla bozza grafica SITO_internet_2.png.
+// Hero con grande foto orizzontale + card evento tonda sovrapposta;
+// reel a griglia; riga di card colorate come nella bozza.
+import { getCollection } from 'astro:content';
+import { useTranslations } from '../i18n/ui.ts';
+import { getReels } from '../lib/sanity.ts';
+import ReelCard from './ReelCard.astro';
+import Placeholder from './Placeholder.astro';
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const base = lang === 'en' ? '/en' : '';
+
+// Fonte primaria: Sanity. Fallback ai contenuti locali se il CMS non è collegato.
+let reels = await getReels();
+if (!reels || reels.length === 0) {
+  const local = await getCollection('reels', ({ data }) => data.published && data.consentOnFile);
+  reels = local.sort((a, b) => a.data.order - b.data.order).map((r) => ({ id: r.id, ...r.data }));
+}
+
+// Card della riga inferiore, nell'ordine della bozza.
+const cards = [
+  { key: 'blueland', href: `${base}/blueland`, variant: 'feature', photo: 'Illustrazione città fantastica blu/verde notturna' },
+  { key: 'ambassador', href: `${base}/ambassadors`, variant: 'mint', photo: 'Mano che regge un piccolo globo terrestre' },
+  { key: 'associations', href: `${base}/associations`, variant: 'gold', photo: 'Mappa stilizzata dell’Europa' },
+  { key: 'news', href: `${base}/news`, variant: 'mint', photo: 'Gruppo di ragazzi sorridenti con smartphone' },
+  { key: 'gallery', href: `${base}/gallery`, variant: 'mint', photo: 'Macchina fotografica vintage su fondo chiaro' },
+];
+---
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <h1>
+        <span class="hero-line hero-line--ink">{t('hero.line1')}</span>
+        <span class="hero-line hero-line--forest">{t('hero.line2')}</span>
+      </h1>
+      <div class="hero-rule" aria-hidden="true"><span class="star">&#9733;</span></div>
+      <p class="hero-sub">{t('hero.sub1')}</p>
+      <p class="hero-sub">{t('hero.sub2')}</p>
+      <div class="hero-actions">
+        <a class="btn btn--primary" href={`${base}/join`}>{t('cta.join')}</a>
+        <a class="btn btn--ghost" href={`${base}/ambassadors`}>{t('cta.becomeAmbassador')}</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <!-- Foto hero (segnaposto): sostituisci con public/images/hero.jpg -->
+      <Placeholder label={t('hero.photoLabel')} ratio="16 / 11" alt="" />
+      <!-- Card evento tonda sovrapposta, come nella bozza -->
+      <aside class="event-badge" aria-label={t('event.city')}>
+        <span class="event-badge-icon" aria-hidden="true">&#128197;</span>
+        <p class="event-badge-date">{t('event.date')}</p>
+        <p class="event-badge-city">{t('event.city')}</p>
+        <p class="event-badge-venue">{t('event.venue')}</p>
+        <p class="event-badge-addr">{t('event.address')}</p>
+        <span class="star" aria-hidden="true">&#9733;</span>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== VOICES FROM EUROPE ===================== -->
+<section class="section reels-section">
+  <div class="container">
+    <header class="reels-head">
+      <div>
+        <span class="eyebrow"><span class="reels-icon" aria-hidden="true">&#127909;</span> {t('reels.title')}</span>
+        <p class="reels-sub">{t('reels.sub')}</p>
+      </div>
+      <a class="reels-seeall" href={`${base}/ambassadors`}>{t('reels.seeAll')} &rarr;</a>
+    </header>
+
+    {reels.length > 0 ? (
+      <div class="reels-grid">
+        {reels.map((reel) => <ReelCard reel={reel} />)}
+      </div>
+    ) : (
+      <p class="reels-empty">{t('reels.empty')}</p>
+    )}
+  </div>
+</section>
+
+<!-- ===================== CARD ROW (come bozza) ===================== -->
+<section class="section cards-section">
+  <div class="container">
+    <div class="feature-cards">
+      {cards.map((c) => (
+        <a class:list={['fcard', `fcard--${c.variant}`]} href={c.href}>
+          <div class="fcard-media">
+            <Placeholder label={c.photo} ratio="1 / 1" alt="" />
+          </div>
+          <div class="fcard-body">
+            <h3>{t(`cards.${c.key}.title`)}</h3>
+            <p>{t(`cards.${c.key}.body`)}</p>
+            <span class="fcard-cta">{t(`cards.${c.key}.cta`)} &rarr;</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ---------------- HERO ---------------- */
+  .hero {
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(2.5rem, 6vw, 5rem);
+    background:
+      radial-gradient(60% 60% at 8% 30%, #eef5ec 0%, transparent 60%),
+      var(--paper);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; left: -30px; top: 38%; width: 160px; height: 160px;
+    background: radial-gradient(circle at 60% 40%, var(--mint), transparent 70%);
+    opacity: 0.5; border-radius: 50%;
+  }
+  .hero-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 2.5rem; align-items: center; position: relative; }
+  .hero-line { display: block; font-size: var(--step-3); letter-spacing: -0.01em; }
+  .hero-line--ink { color: var(--ink); }
+  .hero-line--forest { color: var(--growth-green); }
+  .hero-rule { display: flex; align-items: center; gap: 0.6rem; margin: 1rem 0 1.3rem; }
+  .hero-rule::before, .hero-rule::after { content: ''; height: 2px; width: 64px; background: var(--wonder-gold); }
+  .hero-sub { font-size: var(--step-0); color: var(--ink-soft); margin: 0.2rem 0; max-width: 42ch; }
+  .hero-actions { display: flex; gap: 0.8rem; margin-top: 1.6rem; flex-wrap: wrap; }
+
+  .hero-visual { position: relative; }
+  .event-badge {
+    position: absolute; right: clamp(0.5rem, 1.5vw, 1rem); bottom: clamp(0.5rem, 1.5vw, 1.2rem);
+    width: clamp(170px, 20vw, 215px); aspect-ratio: 1; border-radius: 50%;
+    background: var(--forest-gradient); color: #fff; text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem;
+    padding: 1.4rem; box-shadow: 0 20px 45px -20px rgba(26,92,56,0.7); border: 3px solid rgba(255,255,255,0.18);
+  }
+  .event-badge-icon { color: var(--wonder-gold); font-size: 1.2rem; }
+  .event-badge-date { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; margin: 0.2rem 0 0; }
+  .event-badge-city { font-family: var(--font-display); font-size: 0.95rem; letter-spacing: 0.04em; margin: 0 0 0.4rem; }
+  .event-badge-venue { font-size: 0.7rem; margin: 0; color: #dcebe0; line-height: 1.2; }
+  .event-badge-addr { font-size: 0.64rem; margin: 0.1rem 0 0.3rem; color: #bcd4c3; line-height: 1.25; }
+  .event-badge .star { color: var(--wonder-gold); font-size: 0.7rem; }
+
+  /* ---------------- REELS ---------------- */
+  .reels-section { background: linear-gradient(180deg, #eef5ec, var(--paper)); }
+  .reels-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 1.6rem; flex-wrap: wrap; }
+  .reels-sub { margin: 0.4rem 0 0; color: var(--ink-soft); }
+  .reels-seeall { font-weight: 700; font-size: 0.85rem; color: var(--growth-green); text-decoration: none; white-space: nowrap; }
+  .reels-seeall:hover { color: var(--deep-forest); }
+  .reels-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .reels-empty { padding: 2.5rem; text-align: center; color: var(--ink-soft); border: 1px dashed var(--mint); border-radius: var(--radius); background: #fff; }
+
+  /* ---------------- FEATURE CARDS (riga bozza) ---------------- */
+  .feature-cards { display: grid; gap: 1rem; grid-template-columns: repeat(5, 1fr); }
+  .fcard {
+    display: flex; flex-direction: column; border-radius: var(--radius); overflow: hidden;
+    text-decoration: none; border: 1px solid var(--line); background: #fff;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .fcard:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -20px rgba(26,92,56,0.5); }
+  .fcard-media :global(.ph), .fcard-media :global(.ph-img) { border-radius: 0; border-left: 0; border-right: 0; border-top: 0; }
+  .fcard-body { padding: 1.1rem 1.2rem 1.3rem; display: flex; flex-direction: column; gap: 0.4rem; flex: 1; }
+  .fcard-body h3 { font-size: 1.15rem; color: var(--deep-forest); line-height: 1.15; }
+  .fcard-body p { font-size: 0.85rem; color: var(--ink-soft); margin: 0; flex: 1; }
+  .fcard-cta { font-weight: 700; font-size: 0.8rem; color: var(--growth-green); margin-top: 0.3rem; }
+
+  .fcard--feature { background: var(--forest-gradient); border-color: transparent; }
+  .fcard--feature .fcard-body h3, .fcard--feature .fcard-cta { color: #fff; }
+  .fcard--feature .fcard-body p { color: #cfe3d5; }
+  .fcard--gold { background: #f6ecd4; }
+  .fcard--mint { background: #fff; }
+
+  /* ---------------- RESPONSIVE ---------------- */
+  @media (max-width: 1000px) {
+    .feature-cards { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-visual { order: -1; }
+    .event-badge { width: 42vw; max-width: 200px; right: 1rem; bottom: 1rem; padding: 1.1rem; }
+    .event-badge-venue, .event-badge-addr { display: none; }
+  }
+  @media (max-width: 640px) {
+    .feature-cards { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 440px) {
+    .feature-cards { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+// Card di un singolo reel. Gestisce i due modelli decisi in progettazione:
+//  - embed: mostra anteprima + link al post social pubblico approvato (no API fragili)
+//  - upload: player <video> nativo per i file ospitati da noi
+// Un reel viene mostrato solo se published === true E consentOnFile === true.
+import { useTranslations, getLangFromUrl } from '../i18n/ui.ts';
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const { reel } = Astro.props;
+// 'reel' è un oggetto flat: { name, age, country, countryCode, source,
+//   platform, embedUrl, videoUrl, posterUrl }. Funziona sia con i dati Sanity
+//   sia con i contenuti locali normalizzati.
+const d = reel;
+const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube' }[d.platform] ?? '';
+---
+<article class="reel-card">
+  <div class="reel-media">
+    {d.source === 'upload' && d.videoUrl ? (
+      <video
+        controls
+        preload="none"
+        poster={d.posterUrl}
+        playsinline
+      >
+        <source src={d.videoUrl} />
+      </video>
+    ) : (
+      <a class="reel-embed-link" href={d.embedUrl} target="_blank" rel="noopener noreferrer">
+        {d.posterUrl ? (
+          <img src={d.posterUrl} alt={`${d.name}, ${d.country}`} loading="lazy" />
+        ) : (
+          <span class="reel-placeholder" aria-hidden="true"></span>
+        )}
+        <span class="reel-play" aria-hidden="true">&#9658;</span>
+        <span class="reel-watch">{t('reels.watchOn')} {platformLabel}</span>
+      </a>
+    )}
+  </div>
+  <div class="reel-meta">
+    <span class="reel-name">{d.name}, {d.age}</span>
+    <span class="reel-country">
+      <span class={`fi fi-${d.countryCode}`} aria-hidden="true"></span>
+      {d.country}
+    </span>
+  </div>
+</article>
+
+<style>
+  .reel-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .reel-media { position: relative; aspect-ratio: 4 / 5; background: var(--mint); }
+  .reel-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reel-embed-link { display: block; width: 100%; height: 100%; position: absolute; inset: 0; text-decoration: none; }
+  .reel-embed-link img { width: 100%; height: 100%; object-fit: cover; }
+  .reel-placeholder { display: block; width: 100%; height: 100%; background: linear-gradient(160deg, var(--mint), var(--leaf-green)); }
+  .reel-play {
+    position: absolute; inset: 0; margin: auto; width: 54px; height: 54px;
+    display: grid; place-items: center; color: #fff; font-size: 1.2rem;
+    background: rgba(26,92,56,0.55); border-radius: 999px; padding-left: 4px;
+  }
+  .reel-watch {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 0.5rem 0.7rem;
+    font-size: 0.78rem; font-weight: 600; color: #fff;
+    background: linear-gradient(transparent, rgba(26,92,56,0.85));
+  }
+  .reel-meta { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding: 0.7rem 0.9rem; }
+  .reel-name { font-weight: 700; color: var(--deep-forest); font-size: 0.95rem; }
+  .reel-country { font-size: 0.82rem; color: var(--ink-soft); display: inline-flex; gap: 0.35rem; align-items: center; }
+</style>
