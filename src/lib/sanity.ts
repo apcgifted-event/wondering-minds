@@ -47,6 +47,18 @@ export async function getNews() {
   )
 }
 
+// Singola news per slug (con il corpo in Portable Text), per la pagina di dettaglio.
+export async function getNewsPost(slug) {
+  if (!sanityClient) return null
+  const doc = await sanityClient.fetch(
+    `*[_type == "newsPost" && slug.current == $slug && published == true][0]{
+      title, date, summary, body, "coverUrl": cover.asset->url
+    }`,
+    { slug }
+  )
+  return doc || null
+}
+
 export async function getAssociations() {
   if (!sanityClient) return []
   return sanityClient.fetch(

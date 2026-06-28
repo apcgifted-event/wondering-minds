@@ -140,9 +140,15 @@ Altri segnaposto:
 - Link social reali nel footer.
 
 Tutte le pagine interne sono fatte (IT+EN): Home, Il progetto, L'evento, Blueland 2100,
-Diventa Ambassador, Associazioni, Fondazione, Gallery, Contatti, Partecipa.
+Diventa Ambassador, Associazioni, Fondazione, Gallery, Contatti, Partecipa, News.
 Le pagine di testo (About, Evento, Fondazione, Ambassador, Contatti, Join) sono
 gestibili da Sanity (tipo "Pagine di testo") e precaricabili con studio/seed-pages.mjs.
-Associazioni legge l'elenco da Sanity; Gallery è pronta con segnaposto immagine.
+Associazioni e News leggono i contenuti da Sanity (il gestore li crea dal pannello);
+Gallery è pronta con segnaposto immagine.
+
+> News: la pagina /news elenca gli aggiornamenti pubblicati su Sanity; ogni news ha
+> la sua pagina /news/<slug>. Il link in home (card "News") punta già qui. La voce
+> "News" NON è nel menu principale (già pieno con 9 voci su una riga); se la vuoi in
+> menu, conviene spostare una voce meno centrale nel footer.
 
 Il logo ufficiale (`public/images/logo.png`) è già inserito nell'header.

@@ -1,0 +1,58 @@
+---
+import { PortableText } from 'astro-portabletext';
+
+// Dettaglio di una singola news. Riceve il documento Sanity già recuperato.
+const { post, lang } = Astro.props;
+const base = lang === 'en' ? '/en' : '';
+const t = {
+  it: { back: 'Tutte le news', locale: 'it-IT' },
+  en: { back: 'All news', locale: 'en-GB' },
+}[lang];
+
+function fmtDate(d) {
+  if (!d) return '';
+  try { return new Date(d).toLocaleDateString(t.locale, { day: 'numeric', month: 'long', year: 'numeric' }); }
+  catch { return d; }
+}
+---
+<article class="newspost">
+  <header class="newspost-hero">
+    <div class="container">
+      <a class="newspost-back" href={`${base}/news`}>&larr; {t.back}</a>
+      <time class="newspost-date">{fmtDate(post.date)}</time>
+      <h1>{post.title}</h1>
+      {post.summary && <p class="newspost-summary">{post.summary}</p>}
+    </div>
+  </header>
+
+  {post.coverUrl && (
+    <div class="container newspost-cover">
+      <img src={post.coverUrl} alt={post.title} />
+    </div>
+  )}
+
+  <div class="container newspost-body">
+    <div class="prose">
+      {post.body && post.body.length ? <PortableText value={post.body} /> : null}
+    </div>
+  </div>
+</article>
+
+<style>
+  .newspost-hero { background: var(--forest-gradient); color: #fff; padding-block: clamp(2.4rem, 5vw, 3.6rem); }
+  .newspost-back { color: var(--mint); text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+  .newspost-date { display: block; margin: 1rem 0 0.3rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--wonder-gold); }
+  .newspost-hero h1 { font-size: var(--step-2); margin: 0; max-width: 24ch; }
+  .newspost-summary { max-width: 60ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 0.8rem 0 0; }
+
+  .newspost-cover { margin-top: 2rem; }
+  .newspost-cover img { width: 100%; max-height: 460px; object-fit: cover; border-radius: var(--radius); }
+
+  .newspost-body { padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .prose { max-width: 70ch; }
+  .prose :global(h2) { font-family: var(--font-display); font-size: var(--step-1); color: var(--deep-forest); margin: 2rem 0 0.6rem; }
+  .prose :global(p) { color: var(--ink); line-height: 1.7; margin: 0 0 1rem; }
+  .prose :global(ul) { margin: 0 0 1rem; padding-left: 1.2rem; }
+  .prose :global(li) { color: var(--ink); line-height: 1.6; margin-bottom: 0.5rem; }
+  .prose :global(li)::marker { color: var(--leaf-green); }
+</style>

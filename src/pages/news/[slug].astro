@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import NewsPost from '../../components/NewsPost.astro';
+import { getNews, getNewsPost } from '../../lib/sanity.ts';
+
+// Genera una pagina per ogni news pubblicata su Sanity.
+export async function getStaticPaths() {
+  const news = await getNews();
+  const out = [];
+  for (const n of news) {
+    const post = await getNewsPost(n.slug);
+    if (post) out.push({ params: { slug: n.slug }, props: { post } });
+  }
+  return out;
+}
+const { post } = Astro.props;
+---
+<Base title={post.title}>
+  <NewsPost post={post} lang="it" />
+</Base>
