@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import TextPage from '../components/TextPage.astro';
+import { getPage } from '../lib/sanity.ts';
+import { wallContent } from '../content/pages/wall.ts';
+
+const sanityDoc = await getPage('wall', 'it');
+const fallback = wallContent.it;
+const title = sanityDoc?.title ?? fallback.title;
+---
+<Base title={title}>
+  <TextPage sanityDoc={sanityDoc} fallback={fallback} />
+</Base>

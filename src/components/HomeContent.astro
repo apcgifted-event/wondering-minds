@@ -22,10 +22,12 @@ if (!reels || reels.length === 0) {
   reels = local.sort((a, b) => a.data.order - b.data.order).map((r) => ({ id: r.id, ...r.data }));
 }
 
-// Card della riga inferiore, nell'ordine della bozza. 'slot' = chiave immagine Sanity.
+// Card della riga inferiore. 'slot' = chiave immagine Sanity; 'localImg' = immagine
+// dal codice (es. Wall of Wonder). Blueland usa la variante 'gold' (D4A853).
 const cards = [
-  { key: 'blueland', href: `${base}/blueland`, variant: 'feature', slot: 'card-blueland', photo: 'Illustrazione città fantastica blu/verde notturna' },
+  { key: 'blueland', href: `${base}/blueland`, variant: 'gold-feature', slot: 'card-blueland', photo: 'Illustrazione città fantastica blu/verde notturna' },
   { key: 'ambassador', href: `${base}/ambassadors`, variant: 'mint', slot: 'card-ambassador', photo: 'Mano che regge un piccolo globo terrestre' },
+  { key: 'wall', href: `${base}/wall`, variant: 'mint', slot: 'card-wall', localImg: '/images/wall.jpg', photo: 'Wall of Wonder' },
   { key: 'associations', href: `${base}/associations`, variant: 'gold', slot: 'card-associations', photo: 'Mappa stilizzata dell’Europa' },
   { key: 'news', href: `${base}/news`, variant: 'mint', slot: 'card-news', photo: 'Gruppo di ragazzi sorridenti con smartphone' },
   { key: 'gallery', href: `${base}/gallery`, variant: 'mint', slot: 'card-gallery', photo: 'Macchina fotografica vintage su fondo chiaro' },
@@ -41,7 +43,6 @@ const cards = [
       </h1>
       <div class="hero-rule" aria-hidden="true"><span class="star">&#9733;</span></div>
       <p class="hero-sub">{t('hero.sub1')}</p>
-      <p class="hero-sub">{t('hero.sub2')}</p>
       <div class="hero-actions">
         <a class="btn btn--primary" href={`${base}/join`}>{t('cta.join')}</a>
         <a class="btn btn--ghost" href={`${base}/ambassadors`}>{t('cta.becomeAmbassador')}</a>
@@ -97,7 +98,7 @@ const cards = [
       {cards.map((c) => (
         <a class:list={['fcard', `fcard--${c.variant}`]} href={c.href}>
           <div class="fcard-media">
-            <Placeholder src={img[c.slot]?.url} alt={img[c.slot]?.alt} label={c.photo} ratio="1 / 1" />
+            <Placeholder src={img[c.slot]?.url ?? c.localImg} alt={img[c.slot]?.alt} label={c.photo} ratio="1 / 1" />
           </div>
           <div class="fcard-body">
             <h3>{t(`cards.${c.key}.title`)}</h3>
@@ -151,7 +152,9 @@ const cards = [
   /* ---------------- REELS ---------------- */
   .reels-section { background: linear-gradient(180deg, #eef5ec, var(--paper)); }
   /* Spazi verticali uniformi e più compatti tra i blocchi della home */
-  .reels-section.section, .cards-section.section { padding-block: clamp(1rem, 2vw, 1.5rem); }
+  .reels-section.section { padding-block: clamp(1rem, 2vw, 1.5rem); }
+  /* Fascia card con sfondo bianco per separarla dai reel */
+  .cards-section.section { padding-block: clamp(1.5rem, 3vw, 2.5rem); background: #fff; border-top: 1px solid var(--line); }
   .reels-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-bottom: 1.6rem; flex-wrap: wrap; }
   .reels-sub { margin: 0.4rem 0 0; color: var(--ink-soft); }
   .reels-seeall { font-weight: 700; font-size: 0.85rem; color: var(--growth-green); text-decoration: none; white-space: nowrap; }
@@ -160,7 +163,7 @@ const cards = [
   .reels-empty { padding: 2.5rem; text-align: center; color: var(--ink-soft); border: 1px dashed var(--mint); border-radius: var(--radius); background: #fff; }
 
   /* ---------------- FEATURE CARDS (riga bozza) ---------------- */
-  .feature-cards { display: grid; gap: 1rem; grid-template-columns: repeat(5, 1fr); }
+  .feature-cards { display: grid; gap: 1rem; grid-template-columns: repeat(6, 1fr); }
   .fcard {
     display: flex; flex-direction: column; border-radius: var(--radius); overflow: hidden;
     text-decoration: none; border: 1px solid var(--line); background: #fff;
@@ -176,11 +179,16 @@ const cards = [
   .fcard--feature { background: var(--forest-gradient); border-color: transparent; }
   .fcard--feature .fcard-body h3, .fcard--feature .fcard-cta { color: #fff; }
   .fcard--feature .fcard-body p { color: #cfe3d5; }
+  /* Blueland: box color Wonder Gold pieno */
+  .fcard--gold-feature { background: #D4A853; border-color: transparent; }
+  .fcard--gold-feature .fcard-body h3 { color: #5c3d0a; }
+  .fcard--gold-feature .fcard-body p { color: #6b4d18; }
+  .fcard--gold-feature .fcard-cta { color: #5c3d0a; }
   .fcard--gold { background: #f6ecd4; }
   .fcard--mint { background: #fff; }
 
   /* ---------------- RESPONSIVE ---------------- */
-  @media (max-width: 1000px) {
+  @media (max-width: 1100px) {
     .feature-cards { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 860px) {

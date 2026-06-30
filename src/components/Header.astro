@@ -4,25 +4,28 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const base = lang === 'en' ? '/en' : '';
 
+// Menu primo livello nell'ordine richiesto. "Il progetto" è cliccabile e ha un
+// sottomenu con L'evento e Blueland 2100.
 const nav = [
   { key: 'nav.home', href: `${base}/` },
-  { key: 'nav.about', href: `${base}/about` },
-  { key: 'nav.event', href: `${base}/event` },
-  { key: 'nav.blueland', href: `${base}/blueland` },
+  { key: 'nav.about', href: `${base}/about`, children: [
+    { key: 'nav.event', href: `${base}/event` },
+    { key: 'nav.blueland', href: `${base}/blueland` },
+  ] },
   { key: 'nav.ambassadors', href: `${base}/ambassadors` },
+  { key: 'nav.wall', href: `${base}/wall` },
+  { key: 'nav.reel', href: `${base}/gallery` },
+  { key: 'nav.news', href: `${base}/news` },
   { key: 'nav.associations', href: `${base}/associations` },
   { key: 'nav.foundation', href: `${base}/foundation` },
-  { key: 'nav.gallery', href: `${base}/gallery` },
-  { key: 'nav.news', href: `${base}/news` },
   { key: 'nav.contact', href: `${base}/contact` },
 ];
 
-// URL della pagina corrente nell'altra lingua, per lo switch.
 const otherLang = lang === 'en' ? 'it' : 'en';
 const path = Astro.url.pathname.replace(/^\/en/, '') || '/';
 const otherHref = otherLang === 'en' ? `/en${path === '/' ? '/' : path}` : (path === '/' ? '/' : path);
 ---
-<!-- Barra annuncio: tiene in evidenza l'evento e la CTA, fuori dal menu -->
+<!-- Barra annuncio -->
 <div class="announce">
   <div class="container announce-inner">
     <span class="announce-text"><span class="star" aria-hidden="true">&#9733;</span> {t('announce.text')}</span>
@@ -33,7 +36,7 @@ const otherHref = otherLang === 'en' ? `/en${path === '/' ? '/' : path}` : (path
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href={`${base}/`} aria-label="Wondering Minds — home">
-      <img src="/images/logo.png" alt="Wondering Minds" width="160" height="54" class="brand-logo" />
+      <img src="/images/logo.png" alt="Wondering Minds" class="brand-logo" />
     </a>
 
     <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav">
@@ -44,7 +47,20 @@ const otherHref = otherLang === 'en' ? `/en${path === '/' ? '/' : path}` : (path
     <nav id="primary-nav" class="primary-nav" aria-label="Primary">
       <ul>
         {nav.map((item, i) => (
-          <li class:list={[{ 'has-sep': i > 0 }]}><a href={item.href}>{t(item.key)}</a></li>
+          <li class:list={[{ 'has-sep': i > 0, 'has-children': item.children }]}>
+            {item.children ? (
+              <div class="nav-group">
+                <a href={item.href}>{t(item.key)} <span class="caret" aria-hidden="true">&#9662;</span></a>
+                <ul class="submenu">
+                  {item.children.map((c) => (
+                    <li><a href={c.href}>{t(c.key)}</a></li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <a href={item.href}>{t(item.key)}</a>
+            )}
+          </li>
         ))}
       </ul>
     </nav>
@@ -56,87 +72,72 @@ const otherHref = otherLang === 'en' ? `/en${path === '/' ? '/' : path}` : (path
 </header>
 
 <style>
-  /* ---------- Barra annuncio ---------- */
   .announce { background: var(--deep-forest); color: #fff; font-size: 0.82rem; }
   .announce-inner { display: flex; align-items: center; justify-content: center; gap: 1.2rem; padding: 0.45rem 0; }
   .announce-text { font-weight: 600; letter-spacing: 0.01em; }
   .announce-text .star { color: var(--wonder-gold); }
-  .announce-cta {
-    color: var(--deep-forest); background: var(--wonder-gold); text-decoration: none;
-    font-weight: 700; padding: 0.2rem 0.8rem; border-radius: 999px; white-space: nowrap;
-    transition: background 0.15s ease;
-  }
+  .announce-cta { color: var(--deep-forest); background: var(--wonder-gold); text-decoration: none; font-weight: 700; padding: 0.2rem 0.8rem; border-radius: 999px; white-space: nowrap; transition: background 0.15s ease; }
   .announce-cta:hover { background: #e6bd63; }
 
-  /* ---------- Header ---------- */
-  .site-header {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(250, 251, 246, 0.94);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
-  }
+  .site-header { position: sticky; top: 0; z-index: 100; background: rgba(250, 251, 246, 0.94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
   .header-inner { display: flex; align-items: center; gap: 1.5rem; min-height: 72px; }
 
   .brand { display: inline-flex; align-items: center; flex-shrink: 0; }
-  .brand-logo { display: block; height: 48px; width: auto; }
+  .brand-logo { display: block; height: 52px; width: auto; }
 
-  /* Menu su UNA riga, con separatori verticali sottili tra le voci */
   .primary-nav { margin-inline: auto; }
-  .primary-nav ul { display: flex; align-items: center; gap: 0; list-style: none; margin: 0; padding: 0; white-space: nowrap; }
-  .primary-nav li { display: flex; align-items: center; }
-  .primary-nav li.has-sep::before {
-    content: ''; width: 1px; height: 16px; background: var(--line); margin-inline: 0.65rem;
-  }
-  .primary-nav a {
-    text-decoration: none; font-size: 0.9rem; font-weight: 600; color: var(--ink-soft);
-    padding: 0.4rem 0.15rem; border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-  }
+  .primary-nav > ul { display: flex; align-items: center; gap: 0; list-style: none; margin: 0; padding: 0; white-space: nowrap; }
+  .primary-nav > ul > li { display: flex; align-items: center; position: relative; }
+  .primary-nav > ul > li.has-sep::before { content: ''; width: 1px; height: 16px; background: var(--line); margin-inline: 0.6rem; }
+  .primary-nav a { text-decoration: none; font-size: 0.88rem; font-weight: 600; color: var(--ink-soft); padding: 0.4rem 0.15rem; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; display: inline-flex; align-items: center; gap: 0.25rem; }
   .primary-nav a:hover, .primary-nav a[aria-current="page"] { color: var(--deep-forest); border-color: var(--wonder-gold); }
+  .caret { font-size: 0.6rem; }
 
-  .lang-switch {
-    flex-shrink: 0; font-weight: 700; font-size: 0.85rem; text-decoration: none; color: var(--growth-green);
-    border: 1.5px solid var(--line); border-radius: 999px; padding: 0.4rem 0.7rem;
+  /* Sottomenu */
+  .nav-group { position: relative; }
+  .submenu {
+    position: absolute; top: 100%; left: 0; min-width: 180px;
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: 0 16px 30px -18px rgba(26,92,56,0.4); padding: 0.4rem;
+    list-style: none; margin: 0.4rem 0 0;
+    opacity: 0; visibility: hidden; transform: translateY(-6px); transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
   }
+  .nav-group:hover .submenu, .nav-group:focus-within .submenu { opacity: 1; visibility: visible; transform: translateY(0); }
+  .submenu li { display: block; }
+  .submenu a { display: block; padding: 0.55rem 0.7rem; border-radius: 6px; border-bottom: none; font-size: 0.86rem; }
+  .submenu a:hover { background: #eef5ec; color: var(--deep-forest); }
+
+  .lang-switch { flex-shrink: 0; font-weight: 700; font-size: 0.85rem; text-decoration: none; color: var(--growth-green); border: 1.5px solid var(--line); border-radius: 999px; padding: 0.4rem 0.7rem; }
   .lang-switch:hover { border-color: var(--growth-green); }
 
   .nav-toggle { display: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-  /* ---------- Responsive ---------- */
-  /* Schermi medi: riduco un filo spaziatura e font per restare su una riga più a lungo */
   @media (max-width: 1180px) {
-    .primary-nav a { font-size: 0.84rem; }
-    .primary-nav li.has-sep::before { margin-inline: 0.5rem; }
+    .primary-nav a { font-size: 0.82rem; }
+    .primary-nav > ul > li.has-sep::before { margin-inline: 0.45rem; }
     .header-inner { gap: 1rem; }
   }
   @media (max-width: 1040px) {
-    .primary-nav a { font-size: 0.8rem; }
-    .primary-nav li.has-sep::before { margin-inline: 0.4rem; }
+    .primary-nav a { font-size: 0.78rem; }
+    .primary-nav > ul > li.has-sep::before { margin-inline: 0.35rem; }
   }
-  /* Sotto i 940px: menu a tendina mobile */
-  @media (max-width: 940px) {
+  @media (max-width: 980px) {
     .announce-text { font-size: 0.78rem; }
-    .nav-toggle {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 44px; height: 44px; margin-left: auto; order: 2;
-      background: var(--deep-forest); border: none; border-radius: 10px; cursor: pointer;
-    }
-    .nav-toggle-bar, .nav-toggle-bar::before, .nav-toggle-bar::after {
-      content: ''; display: block; width: 20px; height: 2px; background: #fff; position: relative;
-    }
+    .nav-toggle { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-left: auto; order: 2; background: var(--deep-forest); border: none; border-radius: 10px; cursor: pointer; }
+    .nav-toggle-bar, .nav-toggle-bar::before, .nav-toggle-bar::after { content: ''; display: block; width: 20px; height: 2px; background: #fff; position: relative; }
     .nav-toggle-bar::before { position: absolute; top: -6px; }
     .nav-toggle-bar::after { position: absolute; top: 6px; }
     .lang-switch { order: 1; }
-    .primary-nav {
-      order: 3; flex-basis: 100%; margin: 0;
-      max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
-    }
-    .primary-nav.open { max-height: 640px; }
-    .primary-nav ul { flex-direction: column; align-items: stretch; padding-block: 0.5rem 1rem; white-space: normal; }
-    .primary-nav li { display: block; }
-    .primary-nav li.has-sep::before { display: none; }
+    .primary-nav { order: 3; flex-basis: 100%; margin: 0; max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+    .primary-nav.open { max-height: 800px; }
+    .primary-nav > ul { flex-direction: column; align-items: stretch; padding-block: 0.5rem 1rem; white-space: normal; }
+    .primary-nav > ul > li { display: block; }
+    .primary-nav > ul > li.has-sep::before { display: none; }
     .primary-nav a { display: block; padding: 0.7rem 0.2rem; }
+    /* Sottomenu su mobile: sempre aperto, indentato */
+    .submenu { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: none; padding: 0 0 0 1rem; margin: 0; }
+    .caret { display: none; }
   }
 </style>
 
