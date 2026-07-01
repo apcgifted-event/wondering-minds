@@ -1,39 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
+import TextPage from '../components/TextPage.astro';
+import { getPage } from '../lib/sanity.ts';
+import { privacyContent } from '../content/pages/privacy.ts';
+
+const sanityDoc = await getPage('privacy', 'it');
+const fallback = privacyContent.it;
+const title = sanityDoc?.title ?? fallback.title;
 ---
-<Base title="Privacy e cookie">
-  <section class="section">
-    <div class="container" style="max-width: 72ch;">
-      <span class="eyebrow">Informativa</span>
-      <h1 style="font-size: var(--step-2); color: var(--deep-forest); margin: 0.5rem 0 1.5rem;">Privacy e cookie</h1>
-
-      <div class="callout">
-        <strong>Da completare prima del go-live.</strong> Questo è uno scaffold.
-        L'informativa definitiva va redatta e validata dal Gruppo Legale (Compliance
-        &amp; Privacy). Tratta dati di minori: serve base giuridica documentata,
-        consenso verificabile, minimizzazione e una data retention policy.
-      </div>
-
-      <h2 id="titolare" style="font-size: var(--step-1); color: var(--deep-forest); margin-top: 2rem;">Titolare del trattamento</h2>
-      <p style="color: var(--ink-soft);">
-        Carano 4 Children — Fondation privée<br />
-        Rue Belliard 202, 1040 Brussels, Belgium<br />
-        <a href="mailto:info@carano4children.org">info@carano4children.org</a>
-      </p>
-
-      <h2 style="font-size: var(--step-1); color: var(--deep-forest); margin-top: 2rem;">Cookie</h2>
-      <p style="color: var(--ink-soft);">
-        Il sito adotta un approccio privacy-first: nessun cookie di tracciamento o
-        script di terze parti (inclusi embed social) viene caricato prima del consenso
-        esplicito. Specificare qui le categorie effettivamente usate.
-      </p>
-    </div>
-  </section>
+<Base title={title}>
+  <TextPage sanityDoc={sanityDoc} fallback={fallback} />
 </Base>
-
-<style>
-  .callout {
-    background: #f6ecd4; border-left: 4px solid var(--wonder-gold);
-    padding: 1rem 1.2rem; border-radius: 8px; color: var(--ink); font-size: 0.92rem;
-  }
-</style>

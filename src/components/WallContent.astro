@@ -1,0 +1,106 @@
+---
+// Wall of Wonder: bacheca di post-it. Legge da Sanity (schema 'wallNote') con
+// fallback a esempi locali. Font handwritten (Kalam), leggera rotazione per nota.
+import { getWallNotes } from '../lib/sanity.ts';
+
+const { lang } = Astro.props;
+const t = {
+  it: {
+    eyebrow: 'Wall of Wonder',
+    title: 'Wall of Wonder',
+    intro: 'Il muro delle meraviglie: messaggi, idee e riflessioni condivisi da ragazzi, famiglie e professionisti di tutta Europa.',
+    empty: 'I primi messaggi arriveranno presto.',
+  },
+  en: {
+    eyebrow: 'Wall of Wonder',
+    title: 'Wall of Wonder',
+    intro: 'Messages, ideas and reflections shared by young people, families and professionals from across Europe.',
+    empty: 'The first messages are on their way.',
+  },
+}[lang];
+
+let notes = await getWallNotes();
+if (!notes || notes.length === 0) {
+  notes = [
+    { id: 'a', text: 'Together we are stronger!', author: 'Anna, Warszawa', color: 'yellow' },
+    { id: 'b', text: 'L\u2019Europe ensemble', author: 'Paris', color: 'pink' },
+    { id: 'c', text: 'Saluti da Gallarate!', author: 'Marco', color: 'green' },
+    { id: 'd', text: 'Viele Gr\u00fc\u00dfe aus Berlin', author: 'Lena', color: 'blue' },
+    { id: 'e', text: 'Diversidad cultural', author: 'Madrid', color: 'orange' },
+    { id: 'f', text: 'Abra\u00e7os de Lisboa', author: 'Jo\u00e3o', color: 'yellow' },
+    { id: 'g', text: 'Offenheit bindet', author: 'Wien', color: 'green' },
+    { id: 'h', text: '\u0393\u03b5\u03b9\u03b1 \u03c3\u03bf\u03c5!', author: 'Athina', color: 'pink' },
+  ];
+}
+
+// Rotazione pseudo-casuale ma stabile (basata sull'indice) per un effetto naturale.
+const rot = (i) => [-3, 2, -1.5, 3, -2.5, 1.5, -1, 2.5][i % 8];
+---
+<section class="wall-hero">
+  <div class="container">
+    <span class="eyebrow" style="color: var(--mint)">{t.eyebrow}</span>
+    <h1>{t.title}</h1>
+    <p class="wall-intro">{t.intro}</p>
+  </div>
+</section>
+
+<section class="wall-board-section">
+  <div class="container">
+    {notes.length > 0 ? (
+      <div class="wall-board">
+        {notes.map((n, i) => (
+          <div class={`note note--${n.color || 'yellow'}`} style={`--rot:${rot(i)}deg`}>
+            <p class="note-text">{n.text}</p>
+            {n.author && <span class="note-author">— {n.author}</span>}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p class="wall-empty">{t.empty}</p>
+    )}
+  </div>
+</section>
+
+<style>
+  .wall-hero { background: var(--forest-gradient); color: #fff; padding-block: clamp(2.6rem, 6vw, 4.5rem); }
+  .wall-hero h1 { font-size: var(--step-3); margin: 0.4rem 0 0; }
+  .wall-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
+
+  /* Bacheca: sfondo tipo muro chiaro */
+  .wall-board-section {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    background:
+      radial-gradient(circle at 20% 30%, rgba(0,0,0,0.02), transparent 40%),
+      #efeae0;
+  }
+  .wall-board {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1.4rem; align-items: start;
+  }
+
+  .note {
+    font-family: var(--font-hand);
+    padding: 1.2rem 1.1rem 1rem; min-height: 150px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 0.6rem;
+    border-radius: 2px; transform: rotate(var(--rot));
+    box-shadow: 0 8px 16px -8px rgba(0,0,0,0.35);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .note:hover { transform: rotate(0deg) scale(1.03); box-shadow: 0 14px 24px -10px rgba(0,0,0,0.4); z-index: 2; }
+  .note-text { margin: 0; font-size: 1.15rem; line-height: 1.3; color: #2a2a20; }
+  .note-author { font-size: 0.9rem; color: #55503f; align-self: flex-end; }
+
+  /* Colori post-it */
+  .note--yellow { background: #fff3a6; }
+  .note--pink { background: #ffc4de; }
+  .note--green { background: #c7f0a8; }
+  .note--blue { background: #afe0ff; }
+  .note--orange { background: #ffd39a; }
+
+  .wall-empty { padding: 2.5rem; text-align: center; color: var(--ink-soft); border: 1px dashed var(--mint); border-radius: var(--radius); background: #fff; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .note { transform: none; }
+    .note:hover { transform: scale(1.02); }
+  }
+</style>

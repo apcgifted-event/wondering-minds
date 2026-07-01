@@ -192,6 +192,33 @@ for (const p of extra) {
   docs.push(doc);
 }
 
+// ---------- Intestazioni pagine speciali (solo eyebrow/title/intro) ----------
+const heads = [
+  { slug: 'gallery',
+    it: { eyebrow: 'Gallery', title: 'Momenti e storie', intro: 'Immagini, creatività e momenti dalla nostra comunità. La galleria si popolerà con l\u2019avvicinarsi e lo svolgersi dell\u2019evento.' },
+    en: { eyebrow: 'Gallery', title: 'Moments and stories', intro: 'Images, creativity and moments from our community. The gallery will fill up as the event approaches and unfolds.' } },
+  { slug: 'associations',
+    it: { eyebrow: 'La rete', title: 'Associazioni partecipanti', intro: 'Una rete crescente di organizzazioni europee dedicate ai bambini e ai ragazzi ad alto potenziale.' },
+    en: { eyebrow: 'The network', title: 'Participating associations', intro: 'A growing network of European organisations dedicated to gifted and high-potential children and teenagers.' } },
+  { slug: 'news',
+    it: { eyebrow: 'News', title: 'News e aggiornamenti', intro: 'Segui il percorso del progetto: novità, tappe e storie da Road to Brussels.' },
+    en: { eyebrow: 'News', title: 'News & updates', intro: 'Follow the project journey: news, milestones and stories from Road to Brussels.' } },
+  { slug: 'faq',
+    it: { eyebrow: 'FAQ', title: 'Domande frequenti', intro: 'Le risposte alle domande più comuni su European Gifted Minds e sull\u2019evento di Bruxelles.' },
+    en: { eyebrow: 'FAQ', title: 'Frequently asked questions', intro: 'Answers to the most common questions about European Gifted Minds and the Brussels event.' } },
+  { slug: 'privacy',
+    it: { eyebrow: 'Informativa', title: 'Privacy e cookie', intro: 'Da completare prima del go-live: l\u2019informativa definitiva va redatta e validata dal Gruppo Legale.' },
+    en: { eyebrow: 'Notice', title: 'Privacy & cookies', intro: 'To be completed before go-live: the final notice must be drafted and validated by the Legal team.' } },
+];
+for (const h of heads) {
+  docs.push({
+    _id: 'page-' + h.slug, _type: 'page', slug: { _type: 'slug', current: h.slug },
+    eyebrow_it: h.it.eyebrow, title_it: h.it.title, intro_it: h.it.intro,
+    eyebrow_en: h.en.eyebrow, title_en: h.en.title, intro_en: h.en.intro,
+    published: true,
+  });
+}
+
 // ---------- FAQ (una voce per domanda) ----------
 const faqIt = [
   { q: 'Chi può partecipare?', a: 'L\u2019iniziativa è rivolta a bambini e ragazzi ad alto potenziale cognitivo provenienti da diversi paesi europei. La segnalazione avviene tramite le associazioni partner o contattando direttamente la Fondazione.' },

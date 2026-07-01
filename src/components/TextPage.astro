@@ -47,7 +47,11 @@ const hasAside = facts.length > 0 || !!tourUrl;
               {facts.map((f) => (
                 <div class="fact">
                   <dt>{f.label}</dt>
-                  <dd>{f.value}</dd>
+                  <dd>
+                    {f.url ? (
+                      <a href={f.url} target="_blank" rel="noopener noreferrer" class="fact-link">{f.value} &#8599;</a>
+                    ) : f.value}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -92,6 +96,8 @@ const hasAside = facts.length > 0 || !!tourUrl;
   .fact:first-child { padding-top: 0; }
   .fact dt { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--growth-green); }
   .fact dd { margin: 0.15rem 0 0; color: var(--ink); font-weight: 600; }
+  .fact-link { color: var(--growth-green); text-decoration: none; }
+  .fact-link:hover { text-decoration: underline; }
 
   .tour-link {
     display: flex; align-items: center; gap: 0.6rem; text-decoration: none;

@@ -1,11 +1,11 @@
 ---
 // Pagina News & aggiornamenti: elenco che legge da Sanity (schema 'newsPost').
 // Ogni voce rimanda alla pagina di dettaglio /news/<slug>.
-import { getNews } from '../lib/sanity.ts';
+import { getNews, getPage } from '../lib/sanity.ts';
 import Placeholder from './Placeholder.astro';
 
 const { lang } = Astro.props;
-const t = {
+const fb = {
   it: {
     eyebrow: 'News',
     title: 'News e aggiornamenti',
@@ -23,6 +23,8 @@ const t = {
     locale: 'en-GB',
   },
 }[lang];
+const head = await getPage('news', lang);
+const t = { ...fb, eyebrow: head?.eyebrow ?? fb.eyebrow, title: head?.title ?? fb.title, intro: head?.intro ?? fb.intro };
 const base = lang === 'en' ? '/en' : '';
 
 const news = await getNews(lang);

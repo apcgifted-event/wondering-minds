@@ -1,11 +1,11 @@
 ---
 // Pagina Gallery: griglia di foto gestite da Sanity (schema 'galleryImage').
 // Con foto: mostra immagini + didascalia, ordinate. Senza: segnaposto.
-import { getGallery } from '../lib/sanity.ts';
+import { getGallery, getPage } from '../lib/sanity.ts';
 import Placeholder from './Placeholder.astro';
 
 const { lang } = Astro.props;
-const t = {
+const fb = {
   it: {
     eyebrow: 'Gallery',
     title: 'Momenti e storie',
@@ -17,6 +17,9 @@ const t = {
     intro: 'Images, creativity and moments from our community. The gallery will fill up as the event approaches and unfolds.',
   },
 }[lang];
+// Intestazione gestibile da Sanity (pagina "Pagine di testo" con slug "gallery").
+const head = await getPage('gallery', lang);
+const t = { eyebrow: head?.eyebrow ?? fb.eyebrow, title: head?.title ?? fb.title, intro: head?.intro ?? fb.intro };
 
 const photos = await getGallery(lang);
 // Quando non ci sono ancora foto, mostro 6 segnaposto.

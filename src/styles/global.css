@@ -100,3 +100,16 @@ img { max-width: 100%; display: block; }
   padding: 0.6rem 1rem; border-radius: 0 0 8px 0; z-index: 1000;
 }
 .skip-link:focus { left: 0; }
+
+/* Font handwritten per i post-it del Wall of Wonder. Ospitato localmente (GDPR). */
+@font-face {
+  font-family: 'Kalam';
+  src: url('/fonts/Kalam-Regular.ttf') format('truetype');
+  font-weight: 400; font-display: swap;
+}
+@font-face {
+  font-family: 'Kalam';
+  src: url('/fonts/Kalam-Bold.ttf') format('truetype');
+  font-weight: 700; font-display: swap;
+}
+:root { --font-hand: 'Kalam', 'Comic Sans MS', cursive; }

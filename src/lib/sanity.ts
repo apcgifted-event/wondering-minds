@@ -86,7 +86,7 @@ export async function getPage(slug, lang = 'it') {
       "title": coalesce(title_${lang}, title_it),
       "intro": coalesce(intro_${lang}, intro_it),
       "body": coalesce(body_${lang}, body_it),
-      "facts": facts[]{ "label": coalesce(label_${lang}, label_it), "value": coalesce(value_${lang}, value_it) },
+      "facts": facts[]{ "label": coalesce(label_${lang}, label_it), "value": coalesce(value_${lang}, value_it), url },
       tourUrl
     }`,
     { slug }
@@ -125,6 +125,16 @@ export async function getFaqs(lang = 'it') {
       "id": _id,
       "question": coalesce(question_${lang}, question_it),
       "answer": coalesce(answer_${lang}, answer_it)
+    }`
+  )
+}
+
+// Post-it del Wall of Wonder, pubblicati e ordinati.
+export async function getWallNotes() {
+  if (!sanityClient) return []
+  return sanityClient.fetch(
+    `*[_type == "wallNote" && published == true] | order(order asc){
+      "id": _id, text, author, color
     }`
   )
 }

@@ -1,10 +1,10 @@
 ---
 // Pagina Associazioni partner: griglia che legge da Sanity (schema 'association').
 // Mostra il logo solo se autorizzato; altrimenti il nome su sfondo brand.
-import { getAssociations } from '../lib/sanity.ts';
+import { getAssociations, getPage } from '../lib/sanity.ts';
 
 const { lang } = Astro.props;
-const t = {
+const fb = {
   it: {
     eyebrow: 'La rete',
     title: 'Associazioni partecipanti',
@@ -22,6 +22,8 @@ const t = {
     ctaLink: 'Get in touch',
   },
 }[lang];
+const head = await getPage('associations', lang);
+const t = { ...fb, eyebrow: head?.eyebrow ?? fb.eyebrow, title: head?.title ?? fb.title, intro: head?.intro ?? fb.intro };
 const base = lang === 'en' ? '/en' : '';
 
 const associations = await getAssociations();
