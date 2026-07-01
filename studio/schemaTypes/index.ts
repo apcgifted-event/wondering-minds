@@ -4,5 +4,6 @@ import association from './association'
 import page from './page'
 import siteImage from './siteImage'
 import galleryImage from './galleryImage'
+import faq from './faq'
 
-export const schemaTypes = [reel, newsPost, association, page, siteImage, galleryImage]
+export const schemaTypes = [reel, newsPost, association, page, siteImage, galleryImage, faq]

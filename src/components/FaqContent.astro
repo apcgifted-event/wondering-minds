@@ -1,0 +1,60 @@
+---
+// Pagina FAQ: elenco domanda/risposta a fisarmonica. Legge da Sanity (schema 'faq')
+// con fallback ai contenuti locali. Usa <details> nativo: accessibile, senza JS.
+import { getFaqs } from '../lib/sanity.ts';
+import { faqContent } from '../content/pages/faq.ts';
+
+const { lang } = Astro.props;
+const fallback = faqContent[lang];
+
+let items = await getFaqs(lang);
+if (!items || items.length === 0) {
+  items = fallback.items.map((it) => ({ question: it.q, answer: it.a }));
+}
+---
+<article class="faqpage">
+  <header class="faq-hero">
+    <div class="container">
+      <span class="eyebrow">{fallback.eyebrow}</span>
+      <h1>{fallback.title}</h1>
+      <p class="faq-intro">{fallback.intro}</p>
+    </div>
+  </header>
+
+  <div class="container faq-body">
+    <div class="faq-list">
+      {items.map((it) => (
+        <details class="faq-item">
+          <summary>
+            <span class="faq-q">{it.question}</span>
+            <span class="faq-icon" aria-hidden="true">+</span>
+          </summary>
+          <div class="faq-a"><p>{it.answer}</p></div>
+        </details>
+      ))}
+    </div>
+  </div>
+</article>
+
+<style>
+  .faq-hero { background: var(--forest-gradient); color: #fff; padding-block: clamp(2.6rem, 6vw, 4.5rem); }
+  .faq-hero .eyebrow { color: var(--mint); }
+  .faq-hero h1 { font-size: var(--step-3); margin: 0.4rem 0 0; }
+  .faq-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
+
+  .faq-body { padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .faq-list { max-width: 780px; display: flex; flex-direction: column; gap: 0.7rem; }
+
+  .faq-item { border: 1px solid var(--line); border-radius: var(--radius); background: #fff; overflow: hidden; }
+  .faq-item summary {
+    list-style: none; cursor: pointer; padding: 1.1rem 1.3rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    font-family: var(--font-display); font-size: 1.05rem; color: var(--deep-forest);
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary:hover { background: #f6faf4; }
+  .faq-icon { flex-shrink: 0; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 999px; background: #eef5ec; color: var(--growth-green); font-weight: 700; transition: transform 0.2s ease; }
+  .faq-item[open] .faq-icon { transform: rotate(45deg); }
+  .faq-a { padding: 0 1.3rem 1.2rem; }
+  .faq-a p { margin: 0; color: var(--ink); line-height: 1.7; }
+</style>

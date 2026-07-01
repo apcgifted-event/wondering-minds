@@ -116,3 +116,15 @@ export async function getGallery(lang = 'it') {
     }`
   )
 }
+
+// FAQ pubblicate, ordinate, con domanda/risposta nella lingua richiesta.
+export async function getFaqs(lang = 'it') {
+  if (!sanityClient) return []
+  return sanityClient.fetch(
+    `*[_type == "faq" && published == true] | order(order asc){
+      "id": _id,
+      "question": coalesce(question_${lang}, question_it),
+      "answer": coalesce(answer_${lang}, answer_it)
+    }`
+  )
+}
