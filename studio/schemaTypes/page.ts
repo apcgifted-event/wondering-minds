@@ -53,7 +53,7 @@ export default defineType({
             { name: 'label_en', title: 'Etichetta EN', type: 'string' },
             { name: 'value_it', title: 'Valore IT', type: 'string' },
             { name: 'value_en', title: 'Valore EN', type: 'string' },
-            { name: 'url', title: 'Link (facoltativo)', description: 'Se compilato, il valore diventa cliccabile e si apre in una nuova scheda.', type: 'url' },
+            { name: 'url', title: 'Link (facoltativo)', description: 'Se compilato, il valore diventa cliccabile. Accetta indirizzi web (https://...) ed email (mailto:info@...).', type: 'url', validation: (r) => r.uri({ scheme: ['http', 'https', 'mailto', 'tel'] }) },
           ],
           preview: { select: { title: 'label_it', subtitle: 'value_it' } },
         },

@@ -44,16 +44,24 @@ const hasAside = facts.length > 0 || !!tourUrl;
         {facts.length > 0 && (
           <div class="facts-card">
             <dl>
-              {facts.map((f) => (
+              {facts.map((f) => {
+                const isExternal = f.url && /^https?:/i.test(f.url);
+                return (
                 <div class="fact">
                   <dt>{f.label}</dt>
                   <dd>
                     {f.url ? (
-                      <a href={f.url} target="_blank" rel="noopener noreferrer" class="fact-link">{f.value} &#8599;</a>
+                      <a
+                        href={f.url}
+                        target={isExternal ? '_blank' : undefined}
+                        rel={isExternal ? 'noopener noreferrer' : undefined}
+                        class="fact-link"
+                      >{f.value}{isExternal ? ' \u2197' : ''}</a>
                     ) : f.value}
                   </dd>
                 </div>
-              ))}
+                );
+              })}
             </dl>
           </div>
         )}

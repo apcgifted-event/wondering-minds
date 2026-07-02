@@ -15,6 +15,7 @@ const year = new Date().getFullYear();
     <blockquote class="footer-quote">
       <span class="star" aria-hidden="true">&#9733;</span>
       <p>&ldquo;{t('footer.quote')}&rdquo;</p>
+      <cite class="footer-quote-author">{t('footer.quoteAuthor')}</cite>
     </blockquote>
 
     <div class="footer-social">
@@ -52,6 +53,7 @@ const year = new Date().getFullYear();
 
   .footer-quote { text-align: center; margin: 0; }
   .footer-quote p { font-family: var(--font-display); font-style: italic; font-size: var(--step-1); color: #fff; margin: 0.3rem 0 0; }
+  .footer-quote-author { display: block; font-style: normal; font-size: 0.85rem; color: var(--mint); margin-top: 0.5rem; letter-spacing: 0.02em; }
 
   .footer-social { text-align: right; }
   .footer-social .eyebrow { color: var(--mint); }
