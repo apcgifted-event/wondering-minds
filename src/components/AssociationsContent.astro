@@ -75,10 +75,12 @@ const associations = await getAssociations();
   .assoc-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .assoc-card { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; text-decoration: none; background: #fff; transition: transform 0.15s, box-shadow 0.2s; }
   .assoc-card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -20px rgba(26,92,56,0.5); }
-  .assoc-logo { aspect-ratio: 16 / 9; display: grid; place-items: center; background: #eef5ec; padding: 1rem; }
+  /* Logo su fondo BIANCO: i loghi con sfondo bianco non stonano. Altezza fissa. */
+  .assoc-logo { height: 130px; display: grid; place-items: center; background: #fff; padding: 1.1rem; border-bottom: 1px solid var(--line); }
   .assoc-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .assoc-name-mark { font-family: var(--font-display); font-weight: 700; color: var(--deep-forest); text-align: center; font-size: 1.1rem; }
-  .assoc-meta { padding: 0.9rem 1.1rem; display: flex; flex-direction: column; }
+  /* Parte scritta su fondo verdino, altezza uniforme così i testi sono allineati. */
+  .assoc-meta { padding: 0.9rem 1.1rem; display: flex; flex-direction: column; justify-content: center; background: #eef5ec; min-height: 74px; }
   .assoc-name { font-weight: 700; color: var(--deep-forest); }
   .assoc-country { font-size: 0.85rem; color: var(--ink-soft); }
 
