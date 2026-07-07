@@ -87,6 +87,13 @@ export async function getPage(slug, lang = 'it') {
       "intro": coalesce(intro_${lang}, intro_it),
       "body": coalesce(body_${lang}, body_it),
       "facts": facts[]{ "label": coalesce(label_${lang}, label_it), "value": coalesce(value_${lang}, value_it), url },
+      "groups": groups[]{
+        "age": coalesce(age_${lang}, age_it),
+        "title": coalesce(title_${lang}, title_it),
+        "slogan": coalesce(slogan_${lang}, slogan_it),
+        "body": coalesce(body_${lang}, body_it),
+        "output": coalesce(output_${lang}, output_it)
+      },
       tourUrl
     }`,
     { slug }

@@ -99,7 +99,6 @@ const docs = [
     eyebrow_it: eventIt.eyebrow, title_it: eventIt.title, intro_it: eventIt.intro, body_it: toBody(eventIt.sections),
     eyebrow_en: eventEn.eyebrow, title_en: eventEn.title, intro_en: eventEn.intro, body_en: toBody(eventEn.sections),
     facts: factsArray(eventItFacts, eventEnFacts),
-    tourUrl: 'https://discover.matterport.com/space/Pnpcr75yFhm',
     published: true },
 ];
 
@@ -191,6 +190,41 @@ for (const p of extra) {
   if (p.facts) doc.facts = factsArray(p.facts.it, p.facts.en);
   docs.push(doc);
 }
+
+// ---------- Blueland (hero + box per età, bilingue) ----------
+const bluelandGroups = [
+  { age_it: '8–10 anni', age_en: 'ages 8–10',
+    title_it: 'Museo delle Invenzioni', title_en: 'The Museum of Inventions',
+    slogan_it: 'Se lo immagini, puoi costruirlo.', slogan_en: 'If you can imagine it, you can build it.',
+    body_it: 'I bambini entrano nel Museo delle Invenzioni di Blueland e creano un oggetto che aiuta le persone a stare meglio insieme: una macchina, uno zaino, un animale robot, una pianta speciale, uno strumento musicale.',
+    body_en: 'Children enter Blueland\u2019s Museum of Inventions and create an object that helps people be better together: a machine, a backpack, a robot animal, a special plant, a musical instrument.',
+    output_it: 'Stand fisico del Museo, visitabile durante la fase “Visita a Blueland”.',
+    output_en: 'A physical Museum stand, open during the “Visit to Blueland” phase.' },
+  { age_it: '11–14 anni', age_en: 'ages 11–14',
+    title_it: 'La Scuola di Blueland', title_en: 'The School of Blueland',
+    slogan_it: 'La scuola migliore del mondo esiste. Ve la raccontiamo noi.', slogan_en: 'The best school in the world exists. Let us tell you about it.',
+    body_it: 'Il gruppo progetta la scuola dove tutti adorano andare e la racconta attraverso un podcast: come sono fatte le aule, come si imparano le emozioni, come si valorizzano i talenti.',
+    body_en: 'The group designs the school everyone loves to attend and tells its story through a podcast: what the classrooms are like, how emotions are learned, how talents are nurtured.',
+    output_it: 'Podcast registrato (IT + EN), 6–8 minuti, riproducibile durante la visita.',
+    output_en: 'A recorded podcast (IT + EN), 6–8 minutes, playable during the visit.' },
+  { age_it: '15–18 anni', age_en: 'ages 15–18',
+    title_it: 'Il Governo di Blueland', title_en: 'The Government of Blueland',
+    slogan_it: 'Una città così non nasce per caso. Siamo stati noi a costruirla.', slogan_en: 'A city like this doesn\u2019t happen by chance. We built it.',
+    body_it: 'I ragazzi sono il Consiglio dei Ministri di Blueland e raccontano come, in 70 anni, hanno trasformato la società: leggi, diritti, sanità mentale, progettazione dei social network.',
+    body_en: 'The teenagers are Blueland\u2019s Council of Ministers and recount how, over 70 years, they transformed society: laws, rights, mental health, the design of social networks.',
+    output_it: 'Prodotto digitale (sito, TG del futuro, mini-documentario, manifesto) proiettabile durante la visita.',
+    output_en: 'A digital product (website, news of the future, mini-documentary, manifesto) to screen during the visit.' },
+].map((g) => ({ _type: 'object', _key: key(), ...g }));
+
+docs.push({
+  _id: 'page-blueland', _type: 'page', slug: { _type: 'slug', current: 'blueland' },
+  eyebrow_it: 'Laboratori · Bruxelles', eyebrow_en: 'Workshops · Brussels',
+  title_it: 'Blueland 2100', title_en: 'Blueland 2100',
+  intro_it: 'Anno 2100. Blueland è la città dove sono quasi scomparsi isolamento, solitudine, bullismo e ansia cronica. Non perché le persone siano perfette, ma perché la comunità ha imparato a prendersi cura di sé. I partecipanti sono chiamati a ricostruire il segreto di Blueland, divisi in tre gruppi per età.',
+  intro_en: 'The year is 2100. Blueland is the city where isolation, loneliness, bullying and chronic anxiety have almost disappeared. Not because people are perfect, but because the community has learned to care for itself. Participants are called to rebuild the secret of Blueland, divided into three age groups.',
+  groups: bluelandGroups,
+  published: true,
+});
 
 // ---------- Intestazioni pagine speciali (solo eyebrow/title/intro) ----------
 const heads = [

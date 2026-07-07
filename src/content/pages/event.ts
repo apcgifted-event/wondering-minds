@@ -16,8 +16,6 @@ export const eventContent = {
       { label: 'Durata', value: '3\u20134 ore' },
       { label: 'Lingue workshop', value: 'Inglese, italiano' },
     ],
-    tourUrl: 'https://discover.matterport.com/space/Pnpcr75yFhm',
-    tourLabel: 'Esplora la sala con il tour virtuale',
     sections: [
       {
         heading: 'Il workshop',
@@ -55,8 +53,6 @@ export const eventContent = {
       { label: 'Duration', value: '3\u20134 hours' },
       { label: 'Workshop languages', value: 'English, Italian' },
     ],
-    tourUrl: 'https://discover.matterport.com/space/Pnpcr75yFhm',
-    tourLabel: 'Explore the venue with the virtual tour',
     sections: [
       {
         heading: 'The workshop',

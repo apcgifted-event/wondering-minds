@@ -65,6 +65,32 @@ export default defineType({
       type: 'url',
     }),
 
+    // ---- Box per età (usato dalla pagina Blueland) ----
+    defineField({
+      name: 'groups',
+      title: 'Box per fascia d\u2019età (Blueland)',
+      description: 'I riquadri numerati per fascia d\u2019età. Usati dalla pagina Blueland.',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'age_it', title: 'Fascia età IT (es. 8–10 anni)', type: 'string' },
+            { name: 'age_en', title: 'Age group EN (e.g. ages 8–10)', type: 'string' },
+            { name: 'title_it', title: 'Titolo IT', type: 'string' },
+            { name: 'title_en', title: 'Title EN', type: 'string' },
+            { name: 'slogan_it', title: 'Slogan IT', type: 'string' },
+            { name: 'slogan_en', title: 'Slogan EN', type: 'string' },
+            { name: 'body_it', title: 'Testo IT', type: 'text', rows: 3 },
+            { name: 'body_en', title: 'Text EN', type: 'text', rows: 3 },
+            { name: 'output_it', title: 'Prodotto finale IT', type: 'string' },
+            { name: 'output_en', title: 'Final output EN', type: 'string' },
+          ],
+          preview: { select: { title: 'title_it', subtitle: 'age_it' } },
+        },
+      ],
+    }),
+
     defineField({ name: 'published', title: 'Pubblicato', type: 'boolean', initialValue: false }),
   ],
 

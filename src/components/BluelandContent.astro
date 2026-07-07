@@ -1,0 +1,57 @@
+---
+// Pagina Blueland 2100: hero + tre box per fascia d'età.
+// Legge da Sanity (pagina slug "blueland": eyebrow/title/intro + groups) con
+// fallback ai contenuti locali bilingui.
+import { getPage } from '../lib/sanity.ts';
+import { bluelandContent } from '../content/pages/blueland.ts';
+
+const { lang } = Astro.props;
+const fb = bluelandContent[lang];
+const doc = await getPage('blueland', lang);
+
+const eyebrow = doc?.eyebrow ?? fb.eyebrow;
+const title = doc?.title ?? fb.title;
+const intro = doc?.intro ?? fb.intro;
+const groups = (doc?.groups && doc.groups.length) ? doc.groups : fb.groups;
+
+const outputLabel = lang === 'en' ? 'Final output:' : 'Prodotto finale:';
+---
+<section class="bl-hero">
+  <div class="container">
+    <span class="eyebrow" style="color: var(--mint)">{eyebrow}</span>
+    <h1>{title}</h1>
+    <p class="bl-lead">{intro}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container bl-groups">
+    {groups.map((g, i) => (
+      <article class="bl-group">
+        <span class="bl-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        {g.age && <span class="bl-age">{g.age}</span>}
+        <h2>{g.title}</h2>
+        {g.slogan && <p class="bl-slogan">“{g.slogan}”</p>}
+        <p>{g.body}</p>
+        {g.output && <p class="bl-output"><strong>{outputLabel}</strong> {g.output}</p>}
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .bl-hero { background: var(--forest-gradient); color: #fff; padding-block: clamp(3rem, 7vw, 5.5rem); }
+  .bl-hero h1 { font-size: var(--step-3); margin: 0.4rem 0 1rem; }
+  .bl-lead { max-width: 60ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; }
+  .bl-lead strong { color: var(--wonder-gold); }
+
+  .bl-groups { display: grid; gap: 1.5rem; grid-template-columns: repeat(3, 1fr); }
+  .bl-group { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.8rem; position: relative; }
+  .bl-num { font-family: var(--font-display); font-size: 2.4rem; color: var(--mint); line-height: 1; }
+  .bl-age { display: inline-block; margin: 0.4rem 0; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--growth-green); }
+  .bl-group h2 { font-size: var(--step-1); color: var(--deep-forest); }
+  .bl-slogan { font-family: var(--font-display); font-style: italic; color: var(--ink-soft); }
+  .bl-output { font-size: 0.88rem; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 0.8rem; margin-top: 1rem; }
+
+  @media (max-width: 860px) { .bl-groups { grid-template-columns: 1fr; } }
+</style>
