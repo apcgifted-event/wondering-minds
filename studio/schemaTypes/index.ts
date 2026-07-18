@@ -6,5 +6,6 @@ import siteImage from './siteImage'
 import galleryImage from './galleryImage'
 import faq from './faq'
 import wallNote from './wallNote'
+import pdfDoc from './pdfDoc'
 
-export const schemaTypes = [reel, newsPost, association, page, siteImage, galleryImage, faq, wallNote]
+export const schemaTypes = [reel, newsPost, association, page, siteImage, galleryImage, faq, wallNote, pdfDoc]

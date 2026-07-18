@@ -145,3 +145,18 @@ export async function getWallNotes() {
     }`
   )
 }
+
+// Documenti PDF pubblicati (online), ordinati, con titolo nella lingua richiesta.
+export async function getPdfDocs(lang = 'it') {
+  if (!sanityClient) return []
+  return sanityClient.fetch(
+    `*[_type == "pdfDoc" && published == true && defined(file.asset)] | order(order asc){
+      "id": _id,
+      "title": coalesce(title_${lang}, title_it),
+      "description": coalesce(description_${lang}, description_it),
+      "url": file.asset->url,
+      "size": file.asset->size,
+      "originalFilename": file.asset->originalFilename
+    }`
+  )
+}
