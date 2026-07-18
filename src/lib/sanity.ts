@@ -136,12 +136,12 @@ export async function getFaqs(lang = 'it') {
   )
 }
 
-// Post-it del Wall of Wonder, pubblicati e ordinati.
-export async function getWallNotes() {
+// Post-it del Wall of Wonder, pubblicati e ordinati, testo nella lingua richiesta.
+export async function getWallNotes(lang = 'it') {
   if (!sanityClient) return []
   return sanityClient.fetch(
     `*[_type == "wallNote" && published == true] | order(order asc){
-      "id": _id, text, author, color
+      "id": _id, "text": coalesce(text_${lang}, text_it), author, color
     }`
   )
 }

@@ -1,10 +1,10 @@
 ---
 // Wall of Wonder: bacheca di post-it. Legge da Sanity (schema 'wallNote') con
 // fallback a esempi locali. Font handwritten (Kalam), leggera rotazione per nota.
-import { getWallNotes } from '../lib/sanity.ts';
+import { getWallNotes, getPage } from '../lib/sanity.ts';
 
 const { lang } = Astro.props;
-const t = {
+const fb = {
   it: {
     eyebrow: 'Wall of Wonder',
     title: 'Wall of Wonder',
@@ -18,19 +18,35 @@ const t = {
     empty: 'The first messages are on their way.',
   },
 }[lang];
+// Intestazione gestibile da Sanity (slug "wall").
+const head = await getPage('wall', lang);
+const t = { ...fb, eyebrow: head?.eyebrow ?? fb.eyebrow, title: head?.title ?? fb.title, intro: head?.intro ?? fb.intro };
 
-let notes = await getWallNotes();
+let notes = await getWallNotes(lang);
 if (!notes || notes.length === 0) {
-  notes = [
-    { id: 'a', text: 'Together we are stronger!', author: 'Anna, Warszawa', color: 'yellow' },
-    { id: 'b', text: 'L\u2019Europe ensemble', author: 'Paris', color: 'pink' },
-    { id: 'c', text: 'Saluti da Gallarate!', author: 'Marco', color: 'green' },
-    { id: 'd', text: 'Viele Gr\u00fc\u00dfe aus Berlin', author: 'Lena', color: 'blue' },
-    { id: 'e', text: 'Diversidad cultural', author: 'Madrid', color: 'orange' },
-    { id: 'f', text: 'Abra\u00e7os de Lisboa', author: 'Jo\u00e3o', color: 'yellow' },
-    { id: 'g', text: 'Offenheit bindet', author: 'Wien', color: 'green' },
-    { id: 'h', text: '\u0393\u03b5\u03b9\u03b1 \u03c3\u03bf\u03c5!', author: 'Athina', color: 'pink' },
-  ];
+  const fallbackNotes = {
+    it: [
+      { id: 'a', text: 'Insieme siamo più forti!', author: 'Anna, Warszawa', color: 'yellow' },
+      { id: 'b', text: 'L\u2019Europa insieme', author: 'Paris', color: 'pink' },
+      { id: 'c', text: 'Saluti da Gallarate!', author: 'Marco', color: 'green' },
+      { id: 'd', text: 'Tanti saluti da Berlino', author: 'Lena', color: 'blue' },
+      { id: 'e', text: 'Diversità culturale', author: 'Madrid', color: 'orange' },
+      { id: 'f', text: 'Un abbraccio da Lisbona', author: 'Jo\u00e3o', color: 'yellow' },
+      { id: 'g', text: 'L\u2019apertura unisce', author: 'Wien', color: 'green' },
+      { id: 'h', text: 'Ciao a tutti!', author: 'Athina', color: 'pink' },
+    ],
+    en: [
+      { id: 'a', text: 'Together we are stronger!', author: 'Anna, Warszawa', color: 'yellow' },
+      { id: 'b', text: 'Europe together', author: 'Paris', color: 'pink' },
+      { id: 'c', text: 'Greetings from Gallarate!', author: 'Marco', color: 'green' },
+      { id: 'd', text: 'Warm greetings from Berlin', author: 'Lena', color: 'blue' },
+      { id: 'e', text: 'Cultural diversity', author: 'Madrid', color: 'orange' },
+      { id: 'f', text: 'A hug from Lisbon', author: 'Jo\u00e3o', color: 'yellow' },
+      { id: 'g', text: 'Openness connects', author: 'Wien', color: 'green' },
+      { id: 'h', text: 'Hello everyone!', author: 'Athina', color: 'pink' },
+    ],
+  };
+  notes = fallbackNotes[lang];
 }
 
 // Rotazione pseudo-casuale ma stabile (basata sull'indice) per un effetto naturale.
