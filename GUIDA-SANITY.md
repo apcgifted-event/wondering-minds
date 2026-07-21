@@ -270,3 +270,30 @@ dall'archivio lo rende molto più leggero.
 2. Segui la **Parte 1** di questa guida (account + setup).
 3. Poi la **Parte 2** per mettere tutto online.
 4. Consegna al gestore il link dello Studio e la **Parte 3**.
+
+---
+
+## Migrazione contenuti dopo un cambio di schema
+
+Quando uno schema diventa bilingue (es. il campo `text` dei post-it diventa
+`text_it` / `text_en`), i contenuti creati **prima** restano nel vecchio campo e
+nel pannello appaiono vuoti. Il dato non è perso: va spostato nel campo nuovo.
+
+Lo script `studio/migrate-fields.mjs` lo fa in automatico. Dalla cartella `studio`:
+
+```powershell
+$env:SANITY_WRITE_TOKEN="il_tuo_token"; node migrate-fields.mjs
+```
+
+(il token si crea su manage.sanity.io → progetto → API → Tokens, permesso **Editor**)
+
+Cosa migra:
+- **Post-it del Wall**: `text` → `text_it`
+- **News**: `title` → `title_it`, `summary` → `summary_it`, `body` → `body_it`
+
+È sicuro: sposta il valore solo se il campo vecchio è pieno **e** quello nuovo è
+vuoto, quindi non sovrascrive nulla di già compilato. Rilanciarlo non fa danni.
+Al termine stampa un riepilogo dei documenti aggiornati.
+
+> Dopo la migrazione, apri lo Studio, controlla i contenuti e aggiungi le
+> traduzioni inglesi nei campi `EN` dove servono.
