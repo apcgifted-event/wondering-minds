@@ -1,29 +1,46 @@
 ---
-// Pagina Gallery: griglia di foto gestite da Sanity (schema 'galleryImage').
-// Con foto: mostra immagini + didascalia, ordinate. Senza: segnaposto.
-import { getGallery, getPage } from '../lib/sanity.ts';
-import Placeholder from './Placeholder.astro';
+// Pagina Gallery: sezione Reel (video/embed, schema 'reel') sopra la sezione
+// Gallery (foto, schema 'galleryImage'). Con contenuti: mostra la griglia.
+// Senza: un testo semplice al posto dei segnaposto.
+import { getCollection } from 'astro:content';
+import { getGallery, getPage, getReels } from '../lib/sanity.ts';
+import ReelCard from './ReelCard.astro';
 
 const { lang } = Astro.props;
 const fb = {
   it: {
-    eyebrow: 'Gallery',
+    eyebrow: 'Wondering Gifted Minds',
     title: 'Momenti e storie',
     intro: 'Immagini, creatività e momenti dalla nostra comunità. La galleria si popolerà con l’avvicinarsi e lo svolgersi dell’evento.',
+    reelsTitle: 'Reel',
+    reelsSub: 'Storie, idee e visioni dai giovani di tutta Europa.',
+    reelsEmpty: 'I primi reel arriveranno presto.',
+    galleryTitle: 'Gallery',
+    galleryEmpty: 'Qui compariranno le immagini dell\u2019evento.',
   },
   en: {
-    eyebrow: 'Gallery',
+    eyebrow: 'Wondering Gifted Minds',
     title: 'Moments and stories',
     intro: 'Images, creativity and moments from our community. The gallery will fill up as the event approaches and unfolds.',
+    reelsTitle: 'Reels',
+    reelsSub: 'Stories, ideas and visions from young people across Europe.',
+    reelsEmpty: 'The first reels are on their way.',
+    galleryTitle: 'Gallery',
+    galleryEmpty: 'Photos from the event will appear here.',
   },
 }[lang];
 // Intestazione gestibile da Sanity (pagina "Pagine di testo" con slug "gallery").
 const head = await getPage('gallery', lang);
 const t = { eyebrow: head?.eyebrow ?? fb.eyebrow, title: head?.title ?? fb.title, intro: head?.intro ?? fb.intro };
 
+// Reel: fonte primaria Sanity, fallback ai contenuti locali.
+let reels = await getReels();
+if (!reels || reels.length === 0) {
+  const local = await getCollection('reels', ({ data }) => data.published && data.consentOnFile);
+  reels = local.sort((a, b) => a.data.order - b.data.order).map((r) => ({ id: r.id, ...r.data }));
+}
+
 const photos = await getGallery(lang);
-// Quando non ci sono ancora foto, mostro 6 segnaposto.
-const slots = Array.from({ length: 6 });
 ---
 <section class="gallery-hero">
   <div class="container">
@@ -33,8 +50,27 @@ const slots = Array.from({ length: 6 });
   </div>
 </section>
 
+<!-- ===================== REEL ===================== -->
 <section class="section">
   <div class="container">
+    <h2 class="subsection-title">{fb.reelsTitle}</h2>
+    <p class="subsection-sub">{fb.reelsSub}</p>
+
+    {reels.length > 0 ? (
+      <div class="reels-grid">
+        {reels.map((reel) => <ReelCard reel={reel} />)}
+      </div>
+    ) : (
+      <p class="empty-note">{fb.reelsEmpty}</p>
+    )}
+  </div>
+</section>
+
+<!-- ===================== GALLERY ===================== -->
+<section class="section gallery-section">
+  <div class="container">
+    <h2 class="subsection-title">{fb.galleryTitle}</h2>
+
     {photos.length > 0 ? (
       <div class="gallery-grid">
         {photos.map((p) => (
@@ -45,11 +81,7 @@ const slots = Array.from({ length: 6 });
         ))}
       </div>
     ) : (
-      <div class="gallery-grid">
-        {slots.map((_, i) => (
-          <Placeholder label={`Immagine ${i + 1}`} ratio="1 / 1" alt="" />
-        ))}
-      </div>
+      <p class="empty-note">{fb.galleryEmpty}</p>
     )}
   </div>
 </section>
@@ -59,8 +91,16 @@ const slots = Array.from({ length: 6 });
   .gallery-hero h1 { font-size: var(--step-3); margin: 0.4rem 0 0; }
   .gallery-intro { max-width: 56ch; color: #dcebe0; font-size: var(--step-1); line-height: 1.5; margin: 1rem 0 0; }
 
+  .subsection-title { font-size: var(--step-1); color: var(--deep-forest); margin: 0 0 0.3rem; }
+  .subsection-sub { color: var(--ink-soft); margin: 0 0 1.4rem; }
+
+  .reels-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
   .gallery-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .gallery-item { margin: 0; border-radius: var(--radius); overflow: hidden; background: #fff; border: 1px solid var(--line); }
   .gallery-item img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
   .gallery-item figcaption { padding: 0.6rem 0.8rem; font-size: 0.82rem; color: var(--ink-soft); }
+
+  .gallery-section { border-top: 1px solid var(--line); }
+
+  .empty-note { padding: 1.6rem; color: var(--ink-soft); border: 1px dashed var(--mint); border-radius: var(--radius); background: #fff; }
 </style>

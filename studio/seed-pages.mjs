@@ -229,8 +229,8 @@ docs.push({
 // ---------- Intestazioni pagine speciali (solo eyebrow/title/intro) ----------
 const heads = [
   { slug: 'gallery',
-    it: { eyebrow: 'Gallery', title: 'Momenti e storie', intro: 'Immagini, creatività e momenti dalla nostra comunità. La galleria si popolerà con l\u2019avvicinarsi e lo svolgersi dell\u2019evento.' },
-    en: { eyebrow: 'Gallery', title: 'Moments and stories', intro: 'Images, creativity and moments from our community. The gallery will fill up as the event approaches and unfolds.' } },
+    it: { eyebrow: 'Wondering Gifted Minds', title: 'Momenti e storie', intro: 'Immagini, creatività e momenti dalla nostra comunità. La galleria si popolerà con l\u2019avvicinarsi e lo svolgersi dell\u2019evento.' },
+    en: { eyebrow: 'Wondering Gifted Minds', title: 'Moments and stories', intro: 'Images, creativity and moments from our community. The gallery will fill up as the event approaches and unfolds.' } },
   { slug: 'associations',
     it: { eyebrow: 'La rete', title: 'Associazioni partecipanti', intro: 'Una rete crescente di organizzazioni europee dedicate ai bambini e ai ragazzi ad alto potenziale.' },
     en: { eyebrow: 'The network', title: 'Participating associations', intro: 'A growing network of European organisations dedicated to gifted and high-potential children and teenagers.' } },
