@@ -2,6 +2,10 @@
 // Card di un singolo reel. Gestisce i due modelli decisi in progettazione:
 //  - embed: mostra anteprima + link al post social pubblico approvato (no API fragili)
 //  - upload: player <video> nativo per i file ospitati da noi
+//    Il pulsante di download nei controlli e il tasto destro "Salva video"
+//    sono disabilitati (controlsList, oncontextmenu). È una dissuasione, non
+//    un blocco reale: un video mostrato nel browser può sempre essere
+//    salvato da chi ha strumenti sviluppatore o estensioni dedicate.
 // Un reel viene mostrato solo se published === true E consentOnFile === true.
 import { useTranslations, getLangFromUrl } from '../i18n/ui.ts';
 const lang = getLangFromUrl(Astro.url);
@@ -19,9 +23,12 @@ const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouT
     {d.source === 'upload' && d.videoUrl ? (
       <video
         controls
+        controlslist="nodownload noremoteplayback"
+        disablepictureinpicture
         preload="none"
         poster={d.posterUrl}
         playsinline
+        oncontextmenu="return false"
       >
         <source src={d.videoUrl} />
       </video>
