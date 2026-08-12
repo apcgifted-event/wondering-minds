@@ -15,6 +15,14 @@ export default defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Indirizzo pagina (generato dal nome)',
+      description: 'Usato per la pagina dedicata del reel, utile per la condivisione sui social. Non modificare dopo la pubblicazione.',
+      type: 'slug',
+      options: {source: 'name', maxLength: 60},
+      validation: (r) => r.required(),
+    }),
+    defineField({
       name: 'age',
       title: 'Età',
       type: 'number',

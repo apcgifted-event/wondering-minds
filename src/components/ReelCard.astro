@@ -8,8 +8,10 @@
 //    salvato da chi ha strumenti sviluppatore o estensioni dedicate.
 // Un reel viene mostrato solo se published === true E consentOnFile === true.
 import { useTranslations, getLangFromUrl } from '../i18n/ui.ts';
+import ShareButtons from './ShareButtons.astro';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const base = lang === 'en' ? '/en' : '';
 
 const { reel } = Astro.props;
 // 'reel' è un oggetto flat: { name, age, country, countryCode, source,
@@ -17,9 +19,24 @@ const { reel } = Astro.props;
 //   sia con i contenuti locali normalizzati.
 const d = reel;
 const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube' }[d.platform] ?? '';
+
+// Condivisione: per i reel "embed" si condivide direttamente il post originale
+// (Instagram/TikTok...); per i reel "upload" si condivide la pagina dedicata
+// del reel sul nostro sito, che ha anteprima social corretta (foto + nome).
+const reelSlug = d.slug || d.id;
+const dedicatedPath = `${base}/reel/${reelSlug}`;
+const shareUrl = d.source === 'upload' && reelSlug
+  ? new URL(dedicatedPath, Astro.site ?? Astro.url).toString()
+  : d.embedUrl;
+const shareTitle = `${d.name} — Wondering Gifted Minds`;
 ---
 <article class="reel-card">
   <div class="reel-media">
+    {shareUrl && (
+      <div class="reel-share">
+        <ShareButtons url={shareUrl} title={shareTitle} variant="icon" />
+      </div>
+    )}
     {d.source === 'upload' && d.videoUrl ? (
       <video
         controls
@@ -56,6 +73,7 @@ const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouT
 <style>
   .reel-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
   .reel-media { position: relative; aspect-ratio: 4 / 5; background: var(--mint); }
+  .reel-share { position: absolute; top: 0.5rem; right: 0.5rem; z-index: 5; }
   .reel-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
   .reel-embed-link { display: block; width: 100%; height: 100%; position: absolute; inset: 0; text-decoration: none; }
   .reel-embed-link img { width: 100%; height: 100%; object-fit: cover; }

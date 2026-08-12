@@ -4,7 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { getLangFromUrl } from '../i18n/ui.ts';
 
-const { title, description } = Astro.props;
+const { title, description, image } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const fullTitle = title ? `${title} — Wondering Minds` : 'Wondering Minds — European Gifted Minds';
 const desc = description ?? 'Un\u2019iniziativa europea per ragazzi gifted e ad alto potenziale. Road to Brussels, 9 ottobre 2026.';
@@ -27,6 +27,8 @@ const enHref = `/en${path === '/' ? '/' : path}`;
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={desc} />
     <meta property="og:type" content="website" />
+    {image && <meta property="og:image" content={image} />}
+    {image && <meta name="twitter:card" content="summary_large_image" />}
     <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
     <!--
       NOTA COMPLIANCE: prima del go-live aggiungere qui il banner cookie

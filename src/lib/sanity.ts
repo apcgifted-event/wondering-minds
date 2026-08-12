@@ -30,11 +30,25 @@ export async function getReels() {
   if (!sanityClient) return [] // se il CMS non è ancora collegato, niente errori: lista vuota
   return sanityClient.fetch(
     `*[_type == "reel" && published == true && consentOnFile == true] | order(order asc){
-      "id": _id, name, age, country, countryCode, source, platform, embedUrl,
+      "id": _id, "slug": slug.current, name, age, country, countryCode, source, platform, embedUrl,
       "videoUrl": video.asset->url,
       "posterUrl": poster.asset->url
     }`
   )
+}
+
+// Singolo reel per slug: usato dalla pagina dedicata (per la condivisione social).
+export async function getReelBySlug(slug) {
+  if (!sanityClient) return null
+  const doc = await sanityClient.fetch(
+    `*[_type == "reel" && slug.current == $slug && published == true && consentOnFile == true][0]{
+      "id": _id, "slug": slug.current, name, age, country, countryCode, source, platform, embedUrl,
+      "videoUrl": video.asset->url,
+      "posterUrl": poster.asset->url
+    }`,
+    { slug }
+  )
+  return doc || null
 }
 
 export async function getNews(lang = 'it') {

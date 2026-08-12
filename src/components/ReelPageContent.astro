@@ -1,0 +1,65 @@
+---
+// Pagina dedicata a un singolo reel (solo per i reel "upload", ospitati da
+// noi). Serve per la condivisione: ha un URL proprio e un'anteprima social
+// corretta (foto + nome), invece di rimandare tutti alla Gallery generica.
+import ShareButtons from './ShareButtons.astro';
+
+const { reel, lang } = Astro.props;
+const d = reel;
+const base = lang === 'en' ? '/en' : '';
+const t = {
+  it: { back: 'Tutti i reel', share: 'Condividi questo reel' },
+  en: { back: 'All reels', share: 'Share this reel' },
+}[lang];
+
+const shareUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString();
+const shareTitle = `${d.name} — Wondering Gifted Minds`;
+---
+<article class="reelpage">
+  <div class="container reelpage-inner">
+    <a class="reelpage-back" href={`${base}/gallery`}>&larr; {t.back}</a>
+
+    <div class="reelpage-grid">
+      <div class="reelpage-media">
+        <video
+          controls
+          controlslist="nodownload noremoteplayback"
+          disablepictureinpicture
+          preload="metadata"
+          poster={d.posterUrl}
+          playsinline
+          oncontextmenu="return false"
+        >
+          <source src={d.videoUrl} />
+        </video>
+      </div>
+
+      <div class="reelpage-info">
+        <h1>{d.name}</h1>
+        <p class="reelpage-country">
+          <span class={`fi fi-${d.countryCode}`} aria-hidden="true"></span>
+          {d.country}
+        </p>
+        <ShareButtons url={shareUrl} title={shareTitle} variant="bar" label={t.share} />
+      </div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .reelpage-inner { padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .reelpage-back { color: var(--growth-green); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+  .reelpage-back:hover { color: var(--deep-forest); }
+
+  .reelpage-grid { display: grid; grid-template-columns: minmax(0, 420px) 1fr; gap: 2.5rem; align-items: start; margin-top: 1.5rem; }
+  .reelpage-media { border-radius: var(--radius); overflow: hidden; background: #000; aspect-ratio: 4 / 5; }
+  .reelpage-media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .reelpage-info h1 { font-size: var(--step-2); color: var(--deep-forest); margin: 0 0 0.4rem; }
+  .reelpage-country { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--ink-soft); margin: 0 0 1.6rem; }
+
+  @media (max-width: 760px) {
+    .reelpage-grid { grid-template-columns: 1fr; }
+    .reelpage-media { max-width: 360px; }
+  }
+</style>

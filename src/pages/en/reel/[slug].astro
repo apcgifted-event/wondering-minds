@@ -1,0 +1,22 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import ReelPageContent from '../../../components/ReelPageContent.astro';
+import { getReels } from '../../../lib/sanity.ts';
+
+export async function getStaticPaths() {
+  let reels = await getReels();
+  if (!reels || reels.length === 0) {
+    const local = await getCollection('reels', ({ data }) => data.published && data.consentOnFile);
+    reels = local.map((r) => ({ id: r.id, ...r.data }));
+  }
+  return reels
+    .filter((r) => r.source === 'upload' && r.videoUrl)
+    .map((r) => ({ params: { slug: r.slug || r.id }, props: { reel: r } }));
+}
+
+const { reel } = Astro.props;
+---
+<Base title={reel.name} description={`${reel.name}, ${reel.country} — Wondering Gifted Minds`} image={reel.posterUrl && new URL(reel.posterUrl, Astro.site).toString()}>
+  <ReelPageContent reel={reel} lang="en" />
+</Base>
