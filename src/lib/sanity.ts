@@ -174,3 +174,17 @@ export async function getPdfDocs(lang = 'it') {
     }`
   )
 }
+
+// Slug leggibile per un reel privo di slug esplicito (documenti creati prima
+// del campo "slug" nello schema). Stesso identico calcolo ovunque venga
+// usato, così il link condiviso corrisponde sempre a una pagina generata.
+export function reelSlugFor(r) {
+  if (r.slug) return r.slug
+  const base = (r.name || 'reel')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+  const suffix = (r.id || '').replace(/[^a-z0-9]/gi, '').slice(0, 6)
+  return suffix ? `${base}-${suffix}` : base
+}

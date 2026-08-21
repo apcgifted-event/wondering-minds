@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ReelPageContent from '../../../components/ReelPageContent.astro';
-import { getReels } from '../../../lib/sanity.ts';
+import { getReels, reelSlugFor } from '../../../lib/sanity.ts';
 
 export async function getStaticPaths() {
   let reels = await getReels();
@@ -12,7 +12,7 @@ export async function getStaticPaths() {
   }
   return reels
     .filter((r) => r.source === 'upload' && r.videoUrl)
-    .map((r) => ({ params: { slug: r.slug || r.id }, props: { reel: r } }));
+    .map((r) => ({ params: { slug: reelSlugFor(r) }, props: { reel: r } }));
 }
 
 const { reel } = Astro.props;

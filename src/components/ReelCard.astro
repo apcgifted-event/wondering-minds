@@ -9,6 +9,7 @@
 // Un reel viene mostrato solo se published === true E consentOnFile === true.
 import { useTranslations, getLangFromUrl } from '../i18n/ui.ts';
 import ShareButtons from './ShareButtons.astro';
+import { reelSlugFor } from '../lib/sanity.ts';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const base = lang === 'en' ? '/en' : '';
@@ -23,7 +24,7 @@ const platformLabel = { instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouT
 // Condivisione: per i reel "embed" si condivide direttamente il post originale
 // (Instagram/TikTok...); per i reel "upload" si condivide la pagina dedicata
 // del reel sul nostro sito, che ha anteprima social corretta (foto + nome).
-const reelSlug = d.slug || d.id;
+const reelSlug = reelSlugFor(d);
 const dedicatedPath = `${base}/reel/${reelSlug}`;
 const shareUrl = d.source === 'upload' && reelSlug
   ? new URL(dedicatedPath, Astro.site ?? Astro.url).toString()

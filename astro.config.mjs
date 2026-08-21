@@ -5,7 +5,10 @@ import { defineConfig } from 'astro/config';
 // Default IT, EN come seconda lingua sotto /en/.
 export default defineConfig({
   // Cambia con il dominio definitivo della fondazione prima del deploy.
-  site: 'https://wonderingminds.carano4children.org',
+  // Dominio attuale (Cloudflare Pages). Quando sarà collegato il dominio
+  // definitivo (carano4children.org), aggiornare qui: è l'unico punto da
+  // cambiare, usato per i link assoluti (hreflang, condivisione social).
+  site: 'https://wondering-minds.pages.dev',
   i18n: {
     defaultLocale: 'it',
     locales: ['it', 'en'],
